@@ -1,11 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { createContext, useContext, useEffect, useState } from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
-type Mode = "doom" | "netflix" | "adventure"
+type Mode = "netflix" | "adventure" | "mobile-rpg"
 
 interface ModeContextType {
   mode: Mode
@@ -19,19 +18,19 @@ const ModeContext = createContext<ModeContextType | undefined>(undefined)
 export function ModeProvider({ children }: { children: React.ReactNode }) {
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isTabletOrPC = useMediaQuery("(min-width: 768px)")
-  const [mode, setMode] = useState<Mode>("doom") // Default to "doom" to avoid null
+  const [mode, setMode] = useState<Mode>("mobile-rpg") // Default to mobile-rpg instead of doom
 
   useEffect(() => {
     // Check URL params for mode
     const params = new URLSearchParams(window.location.search)
     const modeParam = params.get("mode") as Mode | null
 
-    if (modeParam && ["doom", "netflix", "adventure"].includes(modeParam)) {
+    if (modeParam && ["netflix", "adventure", "mobile-rpg"].includes(modeParam)) {
       setMode(modeParam)
     } else {
       // Set default mode based on device
       if (isMobile) {
-        setMode("doom")
+        setMode("mobile-rpg") // Set mobile-rpg as default for mobile
       } else if (isTabletOrPC) {
         setMode("netflix")
       }

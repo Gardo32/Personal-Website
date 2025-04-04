@@ -44,12 +44,6 @@ export default function HeroSection({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Button className="w-full">
-          View Projects <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-        <Button variant="outline" className="w-full">
-          Contact Me
-        </Button>
       </motion.div>
 
       <motion.div

@@ -1,25 +1,25 @@
 "use client"
 
 import { useMode } from "@/components/mode-provider"
-import DoomScrollingMode from "@/components/modes/doom-scrolling-mode"
-import NetflixMode from "@/components/modes/netflix-mode"
 import AdventureMode from "@/components/modes/adventure-mode"
-import ModeToggle from "@/components/mode-toggle"
+import MobileRpgMode from "@/components/modes/mobile-rpg-mode"
 
 export default function HomePage() {
-  const { mode, isMobile, isTabletOrPC } = useMode()
+  const { mode, isMobile } = useMode()
+  
+  if (mode === "mobile-rpg") {
+    return <MobileRpgMode />
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <ModeToggle />
+      {/* ModeToggle removed */}
 
-      {mode === "doom" && isMobile && <DoomScrollingMode />}
-      {mode === "netflix" && isTabletOrPC && <NetflixMode />}
-      {mode === "adventure" && <AdventureMode />}
-
-      {/* Fallback content if mode is not available for device */}
-      {mode === "doom" && !isMobile && <AdventureMode />}
-      {mode === "netflix" && !isTabletOrPC && <AdventureMode />}
+      {isMobile ? (
+        <MobileRpgMode />
+      ) : (
+        <AdventureMode />
+      )}
     </div>
   )
 }

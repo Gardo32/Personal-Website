@@ -12,7 +12,7 @@ import ProjectsSection from "@/components/sections/projects-section"
 import SkillsSection from "@/components/sections/skills-section"
 import ContactSection from "@/components/sections/contact-section"
 import { Button } from "@/components/ui/button"
-import { Heart, Map, Scroll, Sparkles, Compass, Backpack } from "lucide-react"
+import { Heart, Map, Scroll, Sparkles, Compass, Backpack, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Menu } from "lucide-react"
 
 type Zone = "home" | "about" | "certifications" | "projects" | "skills" | "contact"
 
@@ -42,16 +42,15 @@ interface QuestLog {
   completed: boolean
 }
 
-export default function AdventureMode() {
+export default function MobileRpgMode() {
   const { isMobile } = useMode()
   const [currentZone, setCurrentZone] = useState<Zone>("home")
   const [dialogMessage, setDialogMessage] = useState<DialogMessage | null>(null)
   const [characterPosition, setCharacterPosition] = useState({ x: 50, y: 80 })
   const [isMoving, setIsMoving] = useState(false)
   const [direction, setDirection] = useState<"left" | "right" | "up" | "down" | null>(null)
-  const [showInventory, setShowInventory] = useState(false)
-  const [showQuestLog, setShowQuestLog] = useState(false)
-  const [showMiniMap, setShowMiniMap] = useState(true)
+  const [showMenu, setShowMenu] = useState(false)
+  const [currentMenuItem, setCurrentMenuItem] = useState<"inventory" | "quest" | "map" | "skills" | null>(null)
   const [gameStats, setGameStats] = useState<GameStats>({
     level: 1,
     exp: 0,
@@ -85,7 +84,6 @@ export default function AdventureMode() {
   ])
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const mapCanvasRef = useRef<HTMLCanvasElement>(null)
   const avatarRef = useRef<HTMLImageElement | null>(null)
 
   // Game zones with coordinates and components
@@ -105,7 +103,7 @@ export default function AdventureMode() {
       y: 40,
       component: AboutSection,
       name: "Biography Forest",
-      description: "A mystical forest containing Mohammed's story",
+      description: "Mohammed Aldaqaq is a high school student specializing in cloud computing at the Nasser Center for Science and Technology. His primary focus lies in the operational aspects of technology, particularly within cloud computing, though he also possesses a keen interest in development.",
       type: "forest",
       color: "#228B22", // Forest green
       radius: 2.2,
@@ -147,7 +145,7 @@ export default function AdventureMode() {
       name: "Communication Crystal",
       description: "Magical crystal for contacting Mohammed",
       type: "crystal",
-      color: "#00CED1", // Changed from purple to turquoise for communication
+      color: "#00CED1", // Turquoise for communication
       radius: 1.8,
     },
   }
@@ -177,7 +175,7 @@ export default function AdventureMode() {
   // Load avatar image
   useEffect(() => {
     const img = new Image()
-    img.src = "/images/pixel-character.png" // Using the new pixel character image
+    img.src = "/images/pixel-character.png" // Using the pixel character image
     img.crossOrigin = "anonymous"
     img.onload = () => {
       avatarRef.current = img
@@ -196,48 +194,6 @@ export default function AdventureMode() {
         { text: "Head to Creation Workshop", action: () => navigateToZone("projects") },
       ],
     })
-
-    // Keyboard navigation for desktop and touch events for mobile
-    const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case "ArrowUp":
-          setDirection("up")
-          moveCharacter(0, -5)
-          break
-        case "ArrowDown":
-          setDirection("down")
-          moveCharacter(0, 5)
-          break
-        case "ArrowLeft":
-          setDirection("left")
-          moveCharacter(-5, 0)
-          break
-        case "ArrowRight":
-          setDirection("right")
-          moveCharacter(5, 0)
-          break
-        case "i":
-          setShowInventory((prev) => !prev)
-          break
-        case "q":
-          setShowQuestLog((prev) => !prev)
-          break
-        case "m":
-          setShowMiniMap((prev) => !prev)
-          break
-      }
-    }
-
-    const handleKeyUp = () => {
-      setDirection(null)
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    window.addEventListener("keyup", handleKeyUp)
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-      window.removeEventListener("keyup", handleKeyUp)
-    }
   }, [])
 
   // Animation loop for character
@@ -248,11 +204,11 @@ export default function AdventureMode() {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    // Set canvas dimensions
+    // Set canvas dimensions to match mobile screen
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    const tileSize = 32
+    const tileSize = 24 // Smaller tile size for mobile
     
     // Draw simplified map with zones and paths
     const drawMap = () => {
@@ -260,156 +216,93 @@ export default function AdventureMode() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
       // Draw dirt paths between zones
-      ctx.strokeStyle = "#8B4513";  // Brown dirt path
-      ctx.lineWidth = tileSize * 0.8;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
+      ctx.strokeStyle = "#8B4513"  // Brown dirt path
+      ctx.lineWidth = tileSize * 0.6  // Thinner for mobile
+      ctx.lineCap = "round"
+      ctx.lineJoin = "round"
       
       // Draw main path
-      ctx.beginPath();
-      let firstZone = true;
+      ctx.beginPath()
+      let firstZone = true
       Object.values(zones).forEach((zone) => {
-        const x = (zone.x * canvas.width) / 100;
-        const y = (zone.y * canvas.height) / 100;
+        const x = (zone.x * canvas.width) / 100
+        const y = (zone.y * canvas.height) / 100
         if (firstZone) {
-          ctx.moveTo(x, y);
-          firstZone = false;
+          ctx.moveTo(x, y)
+          firstZone = false
         } else {
-          ctx.lineTo(x, y);
+          ctx.lineTo(x, y)
         }
-      });
-      ctx.stroke();
+      })
+      ctx.stroke()
 
       // Draw zone locations with simple markers
       Object.entries(zones).forEach(([zoneName, zone]) => {
-        const x = (zone.x * canvas.width) / 100;
-        const y = (zone.y * canvas.height) / 100;
-        const radius = tileSize * zone.radius;
+        const x = (zone.x * canvas.width) / 100
+        const y = (zone.y * canvas.height) / 100
+        const radius = tileSize * zone.radius
 
         // Draw zone circle
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.beginPath()
+        ctx.arc(x, y, radius, 0, Math.PI * 2)
         ctx.fillStyle = zoneName === currentZone
           ? `${zone.color}80` // Current zone (with transparency)
-          : `${zone.color}40`; // Other zones (more transparent)
-        ctx.fill();
+          : `${zone.color}40` // Other zones (more transparent)
+        ctx.fill()
         
         // Draw zone border
-        ctx.strokeStyle = zone.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.strokeStyle = zone.color
+        ctx.lineWidth = 2
+        ctx.stroke()
         
         // Draw zone icon
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "16px monospace";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#ffffff"
+        ctx.font = "12px monospace"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
         
         // Different icon for each zone type
-        let icon = "⭐";
-        if (zone.type === "forest") icon = "🌲";
-        if (zone.type === "temple") icon = "🏛️";
-        if (zone.type === "workshop") icon = "🔨";
-        if (zone.type === "training") icon = "⚔️";
-        if (zone.type === "crystal") icon = "💎";
-        if (zone.type === "town") icon = "🏠";
+        let icon = "⭐"
+        if (zone.type === "forest") icon = "🌲"
+        if (zone.type === "temple") icon = "🏛️"
+        if (zone.type === "workshop") icon = "🔨"
+        if (zone.type === "training") icon = "⚔️"
+        if (zone.type === "crystal") icon = "💎"
+        if (zone.type === "town") icon = "🏠"
         
-        ctx.fillText(icon, x, y);
-      });
+        ctx.fillText(icon, x, y)
+      })
 
       // Draw character
       if (avatarRef.current) {
-        const x = (characterPosition.x * canvas.width) / 100;
-        const y = (characterPosition.y * canvas.height) / 100;
+        const x = (characterPosition.x * canvas.width) / 100
+        const y = (characterPosition.y * canvas.height) / 100
 
         // Draw shadow under character
-        ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-        ctx.beginPath();
-        ctx.ellipse(x, y + 12, 12, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 0.3)"
+        ctx.beginPath()
+        ctx.ellipse(x, y + 10, 8, 4, 0, 0, Math.PI * 2)
+        ctx.fill()
 
         // Draw character
-        ctx.drawImage(avatarRef.current, x - 16, y - 24, 32, 32);
+        ctx.drawImage(avatarRef.current, x - 12, y - 18, 24, 24)
       }
-    };
+    }
 
     // Animation loop
     const animate = () => {
-      drawMap();
-      requestAnimationFrame(animate);
-    };
+      drawMap()
+      requestAnimationFrame(animate)
+    }
 
-    const animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
-  }, [characterPosition, direction, currentZone, isMoving]);
-
-  // Draw mini-map
-  useEffect(() => {
-    if (!showMiniMap) return
-
-    const canvas = mapCanvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    // Set mini-map dimensions
-    canvas.width = 150
-    canvas.height = 150
-
-    // Draw mini-map
-    ctx.fillStyle = "#1f2937"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    // Draw border
-    ctx.strokeStyle = "#4b5563"
-    ctx.lineWidth = 2
-    ctx.strokeRect(0, 0, canvas.width, canvas.height)
-
-    // Draw paths between zones
-    ctx.strokeStyle = "#6b7280"
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    let firstZone = true
-    Object.values(zones).forEach((zone) => {
-      const x = (zone.x * canvas.width) / 100
-      const y = (zone.y * canvas.height) / 100
-      if (firstZone) {
-        ctx.moveTo(x, y)
-        firstZone = false
-      } else {
-        ctx.lineTo(x, y)
-      }
-    })
-    ctx.stroke()
-
-    // Draw zone locations
-    Object.entries(zones).forEach(([zoneName, zone]) => {
-      const x = (zone.x * canvas.width) / 100
-      const y = (zone.y * canvas.height) / 100
-
-      // Draw zone circle
-      ctx.beginPath()
-      ctx.arc(x, y, 5, 0, Math.PI * 2)
-      ctx.fillStyle =
-        zoneName === currentZone
-          ? zone.color // Current zone
-          : `${zone.color}80` // Other zones (with transparency)
-      ctx.fill()
-    })
-
-    // Draw character position
-    const x = (characterPosition.x * canvas.width) / 100
-    const y = (characterPosition.y * canvas.height) / 100
-
-    ctx.beginPath()
-    ctx.arc(x, y, 3, 0, Math.PI * 2)
-    ctx.fillStyle = "#ffffff"
-    ctx.fill()
-  }, [showMiniMap, characterPosition, currentZone])
+    const animationId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationId)
+  }, [characterPosition, direction, currentZone, isMoving])
 
   const moveCharacter = (deltaX: number, deltaY: number) => {
     setIsMoving(true)
+    setDirection(deltaX < 0 ? "left" : deltaX > 0 ? "right" : deltaY < 0 ? "up" : "down")
+    
     setCharacterPosition((prev) => {
       const newX = Math.max(0, Math.min(100, prev.x + deltaX))
       const newY = Math.max(0, Math.min(100, prev.y + deltaY))
@@ -472,7 +365,7 @@ export default function AdventureMode() {
       case "about":
         setDialogMessage({
           speaker: "Forest Sage",
-          text: "You've entered the Biography Forest. The trees here contain memories of Mohammed's journey and background.",
+          text: "Mohammed Aldaqaq is a high school student specializing in cloud computing at the Nasser Center for Science and Technology. His primary focus lies in the operational aspects of technology, particularly within cloud computing, though he also possesses a keen interest in development.",
           options: [
             { text: "Travel to Achievement Temple", action: () => navigateToZone("certifications") },
             { text: "Visit Creation Workshop", action: () => navigateToZone("projects") },
@@ -563,28 +456,25 @@ export default function AdventureMode() {
     gainExperience(50)
   }
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isMobile) {
-      const touch = e.touches[0]
-      const element = e.currentTarget
-      const rect = element.getBoundingClientRect()
-
-      const x = ((touch.clientX - rect.left) / rect.width) * 100
-      const y = ((touch.clientY - rect.top) / rect.height) * 100
-
-      setCharacterPosition({ x, y })
-      checkZoneProximity()
+  const handleMenuItemClick = (item: "inventory" | "quest" | "map" | "skills") => {
+    if (currentMenuItem === item) {
+      setCurrentMenuItem(null)
+    } else {
+      setCurrentMenuItem(item)
     }
   }
 
   const CurrentZoneComponent = zones[currentZone].component
 
-  // RPG-style dialog box - relocated to the left side to avoid overlapping with mini-map
+  // Remove the mobileControls completely
+  const mobileControls = null;
+
+  // Update the dialog box - positioned lower
   const dialogBox = dialogMessage && (
     <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="absolute bottom-4 left-4 w-[45%] max-w-md bg-[#2C3639]/95 p-4 rounded-lg border-2 border-[#8B4513] z-30 shadow-xl"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="absolute bottom-28 left-4 right-4 bg-[#2C3639]/95 p-4 rounded-lg border-2 border-[#8B4513] z-30 shadow-xl"
     >
       {dialogMessage.speaker && (
         <div className="bg-[#8B4513] -mt-8 px-4 py-1 rounded-full inline-block border border-[#DAA520] font-bold text-sm">
@@ -592,137 +482,120 @@ export default function AdventureMode() {
         </div>
       )}
 
-      <p className="mb-4 text-[#F0E6D2] font-pixel leading-relaxed text-sm sm:text-base">{dialogMessage.text}</p>
+      <p className="mb-4 text-[#F0E6D2] font-pixel leading-tight text-sm">{dialogMessage.text}</p>
 
       {dialogMessage.options && (
         <div className="flex flex-col gap-2 border-t border-[#8B4513] pt-2">
           {dialogMessage.options.map((option, index) => (
-            <Button
+            <span
               key={index}
-              variant="outline"
               onClick={option.action}
-              className={`border-[#8B4513] ${
-                currentZone === "contact" 
-                  ? "bg-[#3F3F3F]/50 hover:bg-[#8B4513]/50 hover:border-[#DAA520]"
-                  : "bg-[#00CED1]/20 hover:bg-[#00CED1]/40 hover:border-[#00CED1]"
-              } transition-colors justify-start text-left text-sm`}
+              className="text-[#DAA520] hover:text-[#F0E6D2] cursor-pointer text-sm"
             >
               ▶ {option.text}
-            </Button>
+            </span>
           ))}
         </div>
       )}
     </motion.div>
   )
 
-  // RPG-style status bars
-  const statusBars = (
-    <div className="absolute top-4 left-4 z-30 bg-gray-900/80 backdrop-blur-sm p-3 rounded-lg border border-gray-700 w-[calc(100%-8rem)] sm:w-64 max-w-xs">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="bg-indigo-900 px-2 py-1 rounded-full text-xs font-bold">Lv. {gameStats.level}</div>
-        <div className="text-sm font-bold">Portfolio Explorer</div>
-      </div>
+  // Add a new handler to move character when clicking/tapping on the canvas
+  const handleCanvasClick = (e: React.MouseEvent | React.TouchEvent) => {
+    // Get canvas element and its dimensions
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    // Get click/touch position 
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    
+    // Convert to percentage position
+    const percentX = ((clientX - rect.left) / canvas.width) * 100;
+    const percentY = ((clientY - rect.top) / canvas.height) * 100;
+    
+    // Set new character position directly
+    setCharacterPosition({ x: percentX, y: percentY });
+    
+    // Check if near a zone
+    checkZoneProximity();
+  };
 
+  // Updated mobile menu button that just opens the items directly
+  const mobileMenuButton = (
+    <div className="absolute bottom-4 right-4 z-30 flex gap-2">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handleMenuItemClick("inventory")}
+        className="w-14 h-14 bg-gray-900/80 border-gray-700 rounded-full"
+      >
+        <Backpack className="h-8 w-8" />
+      </Button>
+    </div>
+  )
+
+  // Simplified mobile menu - remove the old menu system
+  const mobileMenu = null; // Removing the menu popup
+
+  // RPG-style status bar - simplified for mobile
+  const statusBars = (
+    <div className="absolute top-0 left-0 right-0 z-30 bg-gray-900/80 backdrop-blur-sm p-2 flex items-center">
+      <div className="bg-indigo-900 px-2 py-1 rounded-full text-xs font-bold mr-2">Lv. {gameStats.level}</div>
+      
       {/* HP Bar */}
-      <div className="mb-2">
-        <div className="flex justify-between text-xs mb-1">
+      <div className="flex-1 mr-2">
+        <div className="flex justify-between text-xs items-center">
           <span className="flex items-center">
-            <Heart className="h-3 w-3 text-red-500 mr-1" /> HP
-          </span>
-          <span>
-            {gameStats.hp}/{gameStats.maxHp}
+            <Heart className="h-3 w-3 text-red-500 mr-1" /> {gameStats.hp}/{gameStats.maxHp}
           </span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
+        <div className="w-full bg-gray-700 rounded-full h-2">
           <div
-            className="bg-gradient-to-r from-red-800 to-red-500 h-2.5 rounded-full"
+            className="bg-gradient-to-r from-red-800 to-red-500 h-2 rounded-full"
             style={{ width: `${(gameStats.hp / gameStats.maxHp) * 100}%` }}
           ></div>
         </div>
       </div>
 
       {/* MP Bar */}
-      <div className="mb-2">
-        <div className="flex justify-between text-xs mb-1">
+      <div className="flex-1">
+        <div className="flex justify-between text-xs items-center">
           <span className="flex items-center">
-            <Sparkles className="h-3 w-3 text-blue-500 mr-1" /> MP
-          </span>
-          <span>
-            {gameStats.mp}/{gameStats.maxMp}
+            <Sparkles className="h-3 w-3 text-blue-500 mr-1" /> {gameStats.mp}/{gameStats.maxMp}
           </span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
+        <div className="w-full bg-gray-700 rounded-full h-2">
           <div
-            className="bg-gradient-to-r from-blue-800 to-blue-500 h-2.5 rounded-full"
+            className="bg-gradient-to-r from-blue-800 to-blue-500 h-2 rounded-full"
             style={{ width: `${(gameStats.mp / gameStats.maxMp) * 100}%` }}
           ></div>
         </div>
       </div>
+    </div>
+  )
 
-      {/* EXP Bar */}
-      <div>
-        <div className="flex justify-between text-xs mb-1">
-          <span>EXP</span>
-          <span>
-            {gameStats.exp}/{gameStats.maxExp}
-          </span>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
-          <div
-            className="bg-gradient-to-r from-green-800 to-green-500 h-2.5 rounded-full"
-            style={{ width: `${(gameStats.exp / gameStats.maxExp) * 100}%` }}
-          ></div>
-        </div>
+  // Location name indicator
+  const locationIndicator = (
+    <div className="absolute top-16 left-0 right-0 z-20 flex justify-center">
+      <div className="bg-gray-900/80 backdrop-blur-sm px-4 py-1 rounded-full border border-indigo-900">
+        <span className="text-sm font-bold">{zones[currentZone].name}</span>
       </div>
     </div>
   )
 
-  // RPG-style action buttons
-  const actionButtons = (
-    <div className="absolute top-4 right-4 z-30 flex gap-2">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setShowInventory(!showInventory)}
-        className="bg-gray-900/80 backdrop-blur-sm border-gray-700 hover:bg-indigo-900/50 hover:border-indigo-600 h-10 w-10"
-        title="Inventory (I)"
-      >
-        <Backpack className="h-5 w-5" />
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setShowQuestLog(!showQuestLog)}
-        className="bg-gray-900/80 backdrop-blur-sm border-gray-700 hover:bg-indigo-900/50 hover:border-indigo-600 h-10 w-10"
-        title="Quest Log (Q)"
-      >
-        <Scroll className="h-5 w-5" />
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setShowMiniMap(!showMiniMap)}
-        className="bg-gray-900/80 backdrop-blur-sm border-gray-700 hover:bg-indigo-900/50 hover:border-indigo-600 h-10 w-10"
-        title="Mini-map (M)"
-      >
-        <Map className="h-5 w-5" />
-      </Button>
-    </div>
-  )
-
-  // RPG-style inventory
-  const inventoryPanel = showInventory && (
+  // Inventory panel for mobile
+  const inventoryPanel = currentMenuItem === "inventory" && (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 right-4 z-40 bg-gray-900/95 backdrop-blur-md p-4 rounded-lg border-2 border-indigo-800 shadow-xl w-72"
-      style={{ maxHeight: "calc(100vh - 140px)", overflowY: "auto" }} // Make it scrollable to prevent overflow
+      className="absolute top-20 left-4 right-4 z-40 bg-gray-900/95 backdrop-blur-md p-4 rounded-lg border-2 border-indigo-800 shadow-xl"
+      style={{ maxHeight: "40%", overflowY: "auto" }}
     >
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-lg">Inventory</h3>
-        <Button variant="ghost" size="sm" onClick={() => setShowInventory(false)} className="h-6 w-6 p-0">
+        <Button variant="ghost" size="sm" onClick={() => setCurrentMenuItem(null)} className="h-6 w-6 p-0">
           ×
         </Button>
       </div>
@@ -731,7 +604,7 @@ export default function AdventureMode() {
         {inventory.map((item) => (
           <div
             key={item.id}
-            className="bg-gray-800 p-2 rounded border border-gray-700 flex items-start gap-3 hover:border-indigo-600 cursor-pointer transition-colors"
+            className="bg-gray-800 p-2 rounded border border-gray-700 flex items-start gap-3 hover:border-indigo-600 active:bg-gray-700 transition-colors"
           >
             <div className="bg-indigo-900/50 p-2 rounded-lg">{item.icon}</div>
             <div>
@@ -744,17 +617,17 @@ export default function AdventureMode() {
     </motion.div>
   )
 
-  // RPG-style quest log
-  const questLogPanel = showQuestLog && (
+  // Quest log panel for mobile
+  const questLogPanel = currentMenuItem === "quest" && (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 right-4 z-40 bg-gray-900/95 backdrop-blur-md p-4 rounded-lg border-2 border-indigo-800 shadow-xl w-72"
-      style={{ maxHeight: "calc(100vh - 140px)", overflowY: "auto" }} // Make it scrollable to prevent overflow
+      className="absolute top-20 left-4 right-4 z-40 bg-gray-900/95 backdrop-blur-md p-4 rounded-lg border-2 border-indigo-800 shadow-xl"
+      style={{ maxHeight: "40%", overflowY: "auto" }}
     >
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-lg">Quest Log</h3>
-        <Button variant="ghost" size="sm" onClick={() => setShowQuestLog(false)} className="h-6 w-6 p-0">
+        <Button variant="ghost" size="sm" onClick={() => setCurrentMenuItem(null)} className="h-6 w-6 p-0">
           ×
         </Button>
       </div>
@@ -783,17 +656,41 @@ export default function AdventureMode() {
     </motion.div>
   )
 
-  // RPG-style mini-map - kept on the right side
-  const miniMap = showMiniMap && (
-    <div className="absolute bottom-4 right-4 z-30">
-      <div className="bg-gray-900/80 backdrop-blur-sm p-1 rounded-lg border-2 border-gray-700">
-        <canvas ref={mapCanvasRef} width={150} height={150} className="rounded" />
-        <div className="absolute top-2 left-2 bg-gray-900/80 px-2 py-0.5 text-xs rounded">
-          {zones[currentZone].name}
+  // Update the map panel to be the items menu
+  const mapPanel = currentMenuItem === "map" && (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="absolute top-20 left-4 right-4 z-40 bg-gray-900/95 backdrop-blur-md p-4 rounded-lg border-2 border-indigo-800 shadow-xl flex flex-col items-center"
+      style={{ maxHeight: "40%", overflowY: "auto" }}
+    >
+      <div className="flex justify-between items-center w-full mb-4">
+        <h3 className="font-bold text-lg">Items</h3>
+        <Button variant="ghost" size="sm" onClick={() => setCurrentMenuItem(null)} className="h-6 w-6 p-0">
+          ×
+        </Button>
+      </div>
+
+      <div className="w-full overflow-auto">
+        <div className="grid grid-cols-2 gap-2 w-full">
+          {inventory.map((item) => (
+            <div
+              key={item.id}
+              className="bg-gray-800 p-2 rounded border border-gray-700 flex flex-col items-center gap-2 hover:border-indigo-600 active:bg-gray-700 transition-colors"
+            >
+              <div className="bg-indigo-900/50 p-3 rounded-full">{item.icon}</div>
+              <div className="text-center">
+                <h4 className="font-bold text-sm">{item.name}</h4>
+                <p className="text-xs text-gray-400">{item.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
+
+  const skillsPanel = null; // Remove the skills panel entirely
 
   return (
     <div
@@ -804,36 +701,48 @@ export default function AdventureMode() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat"
       }}
-      onTouchMove={handleTouchMove}
+      onClick={handleCanvasClick} 
+      onTouchEnd={handleCanvasClick}
     >
       {/* Game canvas for RPG map and character */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0 z-0" 
+      />
 
-      {/* Current zone content - balanced position */}
+      {/* Current zone content - Updated with slide-down animation */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentZone}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="absolute inset-0 flex items-center justify-center z-10" // Changed back to center
+          initial={{ opacity: 0, y: -100 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 100 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="absolute inset-x-0 top-0 bottom-0 z-10 flex flex-col"
         >
           <div className="absolute inset-0 bg-gray-900/80" />
-          <div className="relative z-20 w-[60%] max-w-3xl ml-[20%] px-4 py-20"> {/* Adjusted position with margin-left */}
-            <CurrentZoneComponent mode="adventure" />
-          </div>
+          <motion.div 
+            initial={{ y: -50 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            className="relative z-20 w-full h-full pt-20 pb-32 px-4 overflow-y-auto"
+          >
+            <div className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700 shadow-xl">
+              <CurrentZoneComponent mode="mobile-rpg" />
+            </div>
+          </motion.div>
         </motion.div>
       </AnimatePresence>
 
-      {/* RPG UI Elements */}
+      {/* Mobile UI Elements - Simplified */}
       {statusBars}
-      {actionButtons}
+      {locationIndicator}
+      {mobileMenuButton}
+      {mobileMenu}
       {dialogBox}
-      {miniMap}
       {inventoryPanel}
       {questLogPanel}
+      {mapPanel}
     </div>
   )
 }
-

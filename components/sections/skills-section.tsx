@@ -30,61 +30,33 @@ interface SkillsSectionProps {
 const skillsWithIcons = {
   programmingLanguages: [
     { name: "Python", icon: <Code className="h-4 w-4 mr-1" /> },
-    { name: "JavaScript (ES6+)", icon: <Braces className="h-4 w-4 mr-1" /> },
-    { name: "TypeScript", icon: <FileCode className="h-4 w-4 mr-1" /> },
     { name: "Solidity", icon: <FileCode className="h-4 w-4 mr-1" /> },
     { name: "HTML5 & CSS3", icon: <Globe className="h-4 w-4 mr-1" /> },
     { name: "Bash", icon: <Terminal className="h-4 w-4 mr-1" /> },
   ],
   frameworks: [
-    { name: "Flask", icon: <Server className="h-4 w-4 mr-1" /> },
-    { name: "Pandas", icon: <Database className="h-4 w-4 mr-1" /> },
-    { name: "Streamlit", icon: <Layers className="h-4 w-4 mr-1" /> },
-    { name: "React", icon: <Layers className="h-4 w-4 mr-1" /> },
-    { name: "TailwindCSS", icon: <Braces className="h-4 w-4 mr-1" /> },
-    { name: "Framer Motion", icon: <Layers className="h-4 w-4 mr-1" /> },
+    { name: "React", icon: <Code className="h-4 w-4 mr-1" /> },
+    { name: "Next.js", icon: <Code className="h-4 w-4 mr-1" /> },
+    { name: "Flask", icon: <Code className="h-4 w-4 mr-1" /> },
   ],
   cloud: [
-    { name: "AWS EC2", icon: <Server className="h-4 w-4 mr-1" /> },
-    { name: "AWS Lambda", icon: <Code className="h-4 w-4 mr-1" /> },
-    { name: "AWS S3", icon: <Database className="h-4 w-4 mr-1" /> },
-    { name: "AWS CloudFront", icon: <Globe className="h-4 w-4 mr-1" /> },
-    { name: "AWS IAM", icon: <Terminal className="h-4 w-4 mr-1" /> },
+    { name: "AWS DevOps", icon: <Server className="h-4 w-4 mr-1" /> },
+    { name: "AWS Architecting", icon: <Code className="h-4 w-4 mr-1" /> },
     { name: "Azure AI Services", icon: <Cpu className="h-4 w-4 mr-1" /> },
-    { name: "Azure Functions", icon: <Code className="h-4 w-4 mr-1" /> },
-    { name: "Azure Blob Storage", icon: <Database className="h-4 w-4 mr-1" /> },
   ],
   devops: [
     { name: "Git & GitHub", icon: <GitBranch className="h-4 w-4 mr-1" /> },
-    { name: "GitHub Actions", icon: <Code className="h-4 w-4 mr-1" /> },
     { name: "Docker", icon: <Layers className="h-4 w-4 mr-1" /> },
     { name: "Docker Swarm", icon: <Server className="h-4 w-4 mr-1" /> },
     { name: "YAML", icon: <FileCode className="h-4 w-4 mr-1" /> },
-    { name: "GitHub CLI", icon: <Terminal className="h-4 w-4 mr-1" /> },
     { name: "VS Code", icon: <Code className="h-4 w-4 mr-1" /> },
   ],
   apiTools: [
-    { name: "RESTful API design", icon: <Server className="h-4 w-4 mr-1" /> },
     { name: "Azure Cognitive Services", icon: <Cpu className="h-4 w-4 mr-1" /> },
     { name: "OpenAI API", icon: <Cpu className="h-4 w-4 mr-1" /> },
     { name: "JSON parsing", icon: <Braces className="h-4 w-4 mr-1" /> },
     { name: "Webhooks", icon: <Globe className="h-4 w-4 mr-1" /> },
     { name: "AI model integration", icon: <Cpu className="h-4 w-4 mr-1" /> },
-  ],
-  devTools: [
-    { name: "Next.js", icon: <Globe className="h-4 w-4 mr-1" /> },
-    { name: "Vercel", icon: <Server className="h-4 w-4 mr-1" /> },
-    { name: "Replit", icon: <Code className="h-4 w-4 mr-1" /> },
-    { name: "Glitch", icon: <Globe className="h-4 w-4 mr-1" /> },
-    { name: "Postman", icon: <Server className="h-4 w-4 mr-1" /> },
-    { name: "ngrok", icon: <Terminal className="h-4 w-4 mr-1" /> },
-  ],
-  collaboration: [
-    { name: "Notion", icon: <FileCode className="h-4 w-4 mr-1" /> },
-    { name: "Trello", icon: <Layers className="h-4 w-4 mr-1" /> },
-    { name: "Google Colab", icon: <Code className="h-4 w-4 mr-1" /> },
-    { name: "GitHub Pages", icon: <Globe className="h-4 w-4 mr-1" /> },
-    { name: "Discord", icon: <MessageCircle className="h-4 w-4 mr-1" /> },
   ],
 }
 
@@ -162,27 +134,8 @@ const renderDoomMode = () => (
           </div>
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold mb-2">🛠️ Development & Deployment Tools</h3>
-          <div className="flex flex-wrap gap-2">
-            {skillsWithIcons.devTools.map((skill) => (
-              <Badge key={skill.name} className="bg-rose-600 flex items-center">
-                {skill.icon} {skill.name}
-              </Badge>
-            ))}
-          </div>
-        </div>
 
-        <div>
-          <h3 className="text-lg font-semibold mb-2">🧪 Learning & Collaboration</h3>
-          <div className="flex flex-wrap gap-2">
-            {skillsWithIcons.collaboration.map((skill) => (
-              <Badge key={skill.name} className="bg-teal-600 flex items-center">
-                {skill.icon} {skill.name}
-              </Badge>
-            ))}
-          </div>
-        </div>
+
       </div>
     </motion.div>
   </div>
@@ -245,28 +198,6 @@ const renderNetflixMode = ({ expanded, onSelect, hoveredItem, onHover }: SkillsS
             <div className="flex flex-wrap gap-2">
               {skillsWithIcons.apiTools.map((skill) => (
                 <Badge key={skill.name} className="bg-orange-600 text-sm flex items-center">
-                  {skill.icon} {skill.name}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <h3 className="text-xl font-bold mb-4">🛠️ Development Tools</h3>
-            <div className="flex flex-wrap gap-2">
-              {skillsWithIcons.devTools.map((skill) => (
-                <Badge key={skill.name} className="bg-rose-600 text-sm flex items-center">
-                  {skill.icon} {skill.name}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <h3 className="text-xl font-bold mb-4">🧪 Collaboration</h3>
-            <div className="flex flex-wrap gap-2">
-              {skillsWithIcons.collaboration.map((skill) => (
-                <Badge key={skill.name} className="bg-teal-600 text-sm flex items-center">
                   {skill.icon} {skill.name}
                 </Badge>
               ))}
@@ -486,68 +417,21 @@ const renderAdventureMode = () => (
               ))}
             </div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.5 }}
-            className="p-4 rounded-lg border border-rose-500/50 bg-rose-900/10"
-          >
-            <h3 className="font-bold text-lg mb-3">🛠️ Development & Deployment Tools</h3>
-            <div className="flex flex-wrap gap-2">
-              {skillsWithIcons.devTools.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Badge className="bg-rose-600 flex items-center">
-                    {skill.icon} {skill.name}
-                  </Badge>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.6 }}
-            className="p-4 rounded-lg border border-teal-500/50 bg-teal-900/10"
-          >
-            <h3 className="font-bold text-lg mb-3">🧪 Learning & Collaboration</h3>
-            <div className="flex flex-wrap gap-2">
-              {skillsWithIcons.collaboration.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Badge className="bg-teal-600 flex items-center">
-                    {skill.icon} {skill.name}
-                  </Badge>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </div>
     </motion.div>
   </div>
 )
 
-const SkillsSection: React.FC<SkillsSectionProps> = ({ mode, expanded, onSelect, onHover, hoveredItem }) => {
-  switch (mode) {
-    case "netflix":
-      return renderNetflixMode({ expanded, onSelect, hoveredItem, onHover })
-    case "adventure":
-      return renderAdventureMode()
-    default:
-      return renderDoomMode()
+export default function SkillsSection({ mode = "doom" }: SkillsSectionProps) {
+  if (mode === "netflix") {
+    return renderNetflixMode({ mode, expanded: false });
   }
-}
 
-export default SkillsSection
+  if (mode === "adventure") {
+    return renderAdventureMode();
+  }
+
+  return renderDoomMode();
+}
 

@@ -37,15 +37,11 @@ export default function AboutSection({
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <p className="mb-4">
-          I'm Mohammed Aldaqaq, a passionate Cloud Computing Intern with expertise in AI and DevOps.
-        </p>
+        Mohammed Aldaqaq is a high school student specializing in cloud computing at the Nasser Center for Science and Technology.</p>
         <p className="mb-4">
-          I'm the youngest Bahraini to earn the Microsoft Certified: Azure AI Engineer Associate certification.
+        His primary focus lies in the operational aspects of technology, particularly within cloud computing, though he also possesses a keen interest in development
         </p>
-        <p>
-          My journey in tech has led me to create innovative solutions that leverage cloud technologies and artificial
-          intelligence.
-        </p>
+
       </motion.div>
     </div>
   )
@@ -58,17 +54,10 @@ export default function AboutSection({
 
           <div className="space-y-4">
             <p>
-              Mohammed Aldaqaq is a dedicated Cloud Computing Intern with a passion for innovative technologies. His
-              expertise spans across cloud platforms, artificial intelligence, and DevOps methodologies.
+              Mohammed Aldaqaq is a high school student specializing in cloud computing at the Nasser Center for Science and Technology.
             </p>
             <p>
-              As the youngest Bahraini to earn the Microsoft Certified: Azure AI Engineer Associate certification,
-              Mohammed has demonstrated exceptional skill and dedication to his field at an early age.
-            </p>
-            <p>
-              His technical journey has been marked by a commitment to continuous learning and applying cutting-edge
-              solutions to real-world problems. Mohammed's work combines theoretical knowledge with practical
-              implementation, creating impactful technology solutions.
+              His primary focus lies in the operational aspects of technology, particularly within cloud computing, though he also possesses a keen interest in development.
             </p>
           </div>
 
@@ -123,14 +112,8 @@ export default function AboutSection({
 
         <div className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-lg border border-gray-700">
           <p className="mb-4">
-            I'm Mohammed Aldaqaq, a passionate Cloud Computing Intern with expertise in AI and DevOps.
-          </p>
-          <p className="mb-4">
-            I'm the youngest Bahraini to earn the Microsoft Certified: Azure AI Engineer Associate certification.
-          </p>
-          <p>
-            My journey in tech has led me to create innovative solutions that leverage cloud technologies and artificial
-            intelligence.
+          Mohammed Aldaqaq is a high school student specializing in cloud computing at the Nasser Center for Science and Technology. </p>
+          <p>His primary focus lies in the operational aspects of technology, particularly within cloud computing, though he also possesses a keen interest in development.
           </p>
         </div>
       </motion.div>

@@ -3,15 +3,15 @@
 import { useState } from "react"
 import { useMode } from "@/components/mode-provider"
 import { motion } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Gamepad2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export default function ModeToggle() {
-  const { mode, setMode, isMobile, isTabletOrPC } = useMode()
+  const { mode, setMode, isMobile } = useMode()
   const [isOpen, setIsOpen] = useState(false)
 
-  const updateMode = (newMode: "doom" | "netflix" | "adventure") => {
+  const updateMode = (newMode: "netflix" | "adventure" | "mobile-rpg") => {
     setMode(newMode)
 
     // Update URL parameter without page refresh
@@ -38,27 +38,18 @@ export default function ModeToggle() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="bg-gray-800 border-gray-700">
-          {isMobile && (
-            <DropdownMenuItem onClick={() => updateMode("doom")} className={`${mode === "doom" ? "bg-gray-700" : ""}`}>
-              Doom Scrolling Mode
-            </DropdownMenuItem>
-          )}
-
-          {isTabletOrPC && (
-            <DropdownMenuItem
-              onClick={() => updateMode("netflix")}
-              className={`${mode === "netflix" ? "bg-gray-700" : ""}`}
+          {isMobile ? (
+            <DropdownMenuItem 
+              onClick={() => updateMode("mobile-rpg")} 
+              className={`${mode === "mobile-rpg" ? "bg-gray-700" : ""} flex items-center`}
             >
-              Netflix Mode
+              <Gamepad2 className="mr-2 h-4 w-4" /> Mobile RPG Mode
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => updateMode("adventure")} className={`${mode === "adventure" ? "bg-gray-700" : ""}`}>
+              Adventure Mode
             </DropdownMenuItem>
           )}
-
-          <DropdownMenuItem
-            onClick={() => updateMode("adventure")}
-            className={`${mode === "adventure" ? "bg-gray-700" : ""}`}
-          >
-            Adventure Mode
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </motion.div>

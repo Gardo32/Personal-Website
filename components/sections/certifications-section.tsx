@@ -65,25 +65,9 @@ const certifications = [
   },
 ]
 
-// Extract a child component for mode-specific rendering.
-function CertificationsContent({
-  mode,
-  expanded,
-  onSelect,
-  onHover,
-  hoveredItem,
-  activeCert,
-  setActiveCert,
-}: {
-  mode: "doom" | "netflix" | "adventure"
-  expanded: boolean
-  onSelect?: () => void
-  onHover?: (id: string) => void
-  hoveredItem?: string | null
-  activeCert: string | null
-  setActiveCert: (id: string | null) => void
-}) {
-  const renderDoomMode = () => (
+// Separate component for Doom mode
+function DoomCertifications() {
+  return (
     <div className="px-4 flex flex-col items-center justify-center h-screen">
       <motion.h2
         className="text-3xl font-bold mb-6 text-center"
@@ -126,14 +110,26 @@ function CertificationsContent({
         </div>
       </motion.div>
     </div>
-  )
+  );
+}
 
-  const renderNetflixMode = () => (
+// Separate component for Netflix mode
+function NetflixCertifications({ 
+  expanded, 
+  onSelect, 
+  onHover, 
+  hoveredItem 
+}: { 
+  expanded: boolean; 
+  onSelect?: () => void; 
+  onHover?: (id: string) => void; 
+  hoveredItem?: string | null; 
+}) {
+  return (
     <div className={`${expanded ? "p-6" : "p-4"}`} onClick={!expanded && onSelect ? () => onSelect() : undefined}>
       {expanded ? (
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-6">Certifications</h2>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {certifications.map((cert) => (
               <Card
@@ -196,9 +192,15 @@ function CertificationsContent({
         </div>
       )}
     </div>
-  )
+  );
+}
 
-  const renderAdventureMode = () => (
+// Separate component for Adventure mode
+function AdventureCertifications() {
+  // Each component has its own state
+  const [activeCert, setActiveCert] = useState<string | null>(null);
+  
+  return (
     <div className="max-w-2xl mx-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -251,18 +253,10 @@ function CertificationsContent({
         </div>
       </motion.div>
     </div>
-  )
-
-  switch (mode) {
-    case "netflix":
-      return renderNetflixMode()
-    case "adventure":
-      return renderAdventureMode()
-    default:
-      return renderDoomMode()
-  }
+  );
 }
 
+// Hook-free main component that just switches between mode components
 export default function CertificationsSection({
   mode = "doom",
   expanded = false,
@@ -270,18 +264,20 @@ export default function CertificationsSection({
   onHover,
   hoveredItem,
 }: CertificationSectionProps) {
-  const [activeCert, setActiveCert] = useState<string | null>(null)
-
-  return (
-    <CertificationsContent
-      mode={mode}
-      expanded={expanded}
-      onSelect={onSelect}
-      onHover={onHover}
-      hoveredItem={hoveredItem}
-      activeCert={activeCert}
-      setActiveCert={setActiveCert}
-    />
-  )
+  // Pure conditional rendering, no hooks
+  if (mode === "netflix") {
+    return <NetflixCertifications 
+      expanded={expanded} 
+      onSelect={onSelect} 
+      onHover={onHover} 
+      hoveredItem={hoveredItem} 
+    />;
+  }
+  
+  if (mode === "adventure") {
+    return <AdventureCertifications />;
+  }
+  
+  return <DoomCertifications />;
 }
 
