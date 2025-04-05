@@ -522,6 +522,45 @@ export default function MobileRpgMode() {
     checkZoneProximity();
   };
 
+  const handleSwipe = (e: React.TouchEvent) => {
+    const touch = e.changedTouches[0];
+    const startX = touch.clientX;
+    const startY = touch.clientY;
+
+    let endX = 0;
+    let endY = 0;
+
+    const handleTouchMove = (moveEvent: TouchEvent) => {
+      endX = moveEvent.touches[0].clientX;
+      endY = moveEvent.touches[0].clientY;
+    };
+
+    const handleTouchEnd = () => {
+      const deltaX = endX - startX;
+      const deltaY = endY - startY;
+
+      if (Math.abs(deltaX) < Math.abs(deltaY) && deltaY < -30) {
+        // Swipe up
+        moveCharacter(0, -5);
+      } else if (Math.abs(deltaX) < Math.abs(deltaY) && deltaY > 30) {
+        // Swipe down
+        moveCharacter(0, 5);
+      } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 30) {
+        // Swipe right
+        moveCharacter(5, 0);
+      } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -30) {
+        // Swipe left
+        moveCharacter(-5, 0);
+      }
+
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+    };
+
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEnd);
+  };
+
   // Updated mobile menu button that just opens the items directly
   const mobileMenuButton = (
     <div className="absolute bottom-4 right-4 z-30 flex gap-2">
@@ -701,6 +740,7 @@ export default function MobileRpgMode() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat"
       }}
+      onTouchStart={handleSwipe} // Attach swipe handler
       onClick={handleCanvasClick} 
       onTouchEnd={handleCanvasClick}
     >
