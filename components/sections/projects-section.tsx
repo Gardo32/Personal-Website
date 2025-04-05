@@ -17,20 +17,20 @@ interface ProjectSectionProps {
 
 const projects = [
   {
-    id: "audio-translation",
-    name: "Audio Translation with Azure",
+    id: "ai-speech-translate",
+    name: "AI-Speech-Translate",
     description: "AI-powered application that translates audio in real-time using Azure Cognitive Services.",
     tags: ["Azure", "AI", "Python"],
     image: "/images/Audio Translation With Azure.webp",
-    link: "#",
+    link: "https://github.com/Gardo32/AI-Speech-Translate",
   },
   {
-    id: "onrobo-system",
-    name: "Onrobo System",
-    description: "A robotic toolkit that simplifies automation for manufacturing processes.",
-    tags: ["Robotics", "IoT", "C++"],
-    image: "/images/Onrobo System.webp",
-    link: "#",
+    id: "py-dex",
+    name: "Py-Dex",
+    description: "A terminal-based educational game that teaches Python programming through an interactive RPG-style experience. Players navigate through levels, solve coding challenges, and learn Python concepts in an engaging way.",
+    tags: ["Python", "Education", "Game Development"],
+    image: "/images/image.png",
+    link: "https://github.com/Gardo32/Py-Game",
   },
   {
     id: "gpa-analytics",
@@ -38,16 +38,16 @@ const projects = [
     description: "Streamlit-based tool for analyzing and visualizing academic performance data.",
     tags: ["Streamlit", "Python", "Data Analysis"],
     image: "/images/GPA-analytics.webp",
-    link: "#",
+    link: "https://github.com/Gardo32/gpa-analytics",
   },
   {
     id: "farmers-aid",
     name: "Farmers Aid",
     description:
       "Digital agriculture tool that helps farmers optimize crop yields using weather data and AI predictions.",
-    tags: ["Agriculture", "AI", "React Native"],
+    tags: ["Agriculture", "AI", "Streamlit"],
     image: "/images/Farmers-aid.webp",
-    link: "#",
+    link: "https://github.com/Gardo32/Farmers-Aid",
   },
 ]
 

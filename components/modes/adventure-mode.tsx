@@ -12,7 +12,7 @@ import ProjectsSection from "@/components/sections/projects-section"
 import SkillsSection from "@/components/sections/skills-section"
 import ContactSection from "@/components/sections/contact-section"
 import { Button } from "@/components/ui/button"
-import { Heart, Map, Scroll, Sparkles, Compass, Backpack } from "lucide-react"
+import { Heart, Map, Scroll, Sparkles, Compass, Backpack, Cloud, Award, ExternalLink } from "lucide-react"
 
 type Zone = "home" | "about" | "certifications" | "projects" | "skills" | "contact"
 
@@ -161,6 +161,20 @@ export default function AdventureMode() {
       icon: <Scroll className="h-5 w-5" />,
     },
     {
+      id: "aws-cert",
+      name: "AWS Certification Badge",
+      description: "Proof of cloud mastery from the AWS Academy",
+      icon: <Cloud className="h-5 w-5" />,
+      certLink: "https://www.credly.com/badges/1be5ff08-e148-4ffa-9f5b-807f917f0f7e/public_url",
+    },
+    {
+      id: "azure-cert",
+      name: "Azure AI Certificate",
+      description: "The legendary Azure AI Engineer certification",
+      icon: <Award className="h-5 w-5" />,
+      certLink: "https://learn.microsoft.com/api/credentials/share/en-us/MohammedAldaqaq-6809/E99B96AAB4D586B8?sharingId=95DBE1616EC92D0",
+    },
+    {
       id: "compass",
       name: "Portfolio Compass",
       description: "Points to Mohammed's best projects",
@@ -186,14 +200,12 @@ export default function AdventureMode() {
 
   // Initialize game
   useEffect(() => {
-    // Welcome message
+    // Welcome message with Town Elder instead of Guide
     setDialogMessage({
-      speaker: "Guide",
-      text: "Welcome, adventurer! I'm your guide to Mohammed's portfolio realm. Where would you like to begin your quest?",
+      speaker: "Town Elder",
+      text: "Welcome to the Town Square, the heart of Mohammed's portfolio world. Let's move forward!",
       options: [
-        { text: "Visit Biography Forest", action: () => navigateToZone("about") },
-        { text: "Explore Achievement Temple", action: () => navigateToZone("certifications") },
-        { text: "Head to Creation Workshop", action: () => navigateToZone("projects") },
+        { text: "Biography Forest", action: () => navigateToZone("about") },
       ],
     })
 
@@ -462,62 +474,59 @@ export default function AdventureMode() {
       case "home":
         setDialogMessage({
           speaker: "Town Elder",
-          text: "Welcome to the Town Square, the heart of Mohammed's portfolio world. Where would you like to venture next?",
+          text: "Welcome to the Town Square, the heart of Mohammed's portfolio world. Let's move forward!",
           options: [
-            { text: "Visit Biography Forest", action: () => navigateToZone("about") },
-            { text: "Explore Achievement Temple", action: () => navigateToZone("certifications") },
+            { text: "Biography Forest", action: () => navigateToZone("about") },
           ],
         })
         break
       case "about":
         setDialogMessage({
           speaker: "Forest Sage",
-          text: "You've entered the Biography Forest. The trees here contain memories of Mohammed's journey and background.",
+          text: "You've entered the Biography Forest. Let's continue your journey.",
           options: [
-            { text: "Travel to Achievement Temple", action: () => navigateToZone("certifications") },
-            { text: "Visit Creation Workshop", action: () => navigateToZone("projects") },
+            { text: "Achievement Temple", action: () => navigateToZone("certifications") },
+            { text: "Town Square", action: () => navigateToZone("home") },
           ],
         })
         break
       case "certifications":
         setDialogMessage({
           speaker: "Temple Guardian",
-          text: "Welcome to the Achievement Temple! Here you'll find Mohammed's certifications, including his status as the youngest Bahraini Azure AI Engineer.",
+          text: "Welcome to the Achievement Temple! Let's proceed to the next stage.",
           options: [
-            { text: "Journey to Creation Workshop", action: () => navigateToZone("projects") },
-            { text: "Head to Training Grounds", action: () => navigateToZone("skills") },
+            { text: "Creation Workshop", action: () => navigateToZone("projects") },
+            { text: "Biography Forest", action: () => navigateToZone("about") },
           ],
         })
         break
       case "projects":
         setDialogMessage({
           speaker: "Master Craftsman",
-          text: "This is the Creation Workshop, where Mohammed's innovative projects are forged and maintained.",
+          text: "This is the Creation Workshop. Let's move to the next stage.",
           options: [
-            { text: "Visit Training Grounds", action: () => navigateToZone("skills") },
-            { text: "Seek the Communication Crystal", action: () => navigateToZone("contact") },
+            { text: "Training Grounds", action: () => navigateToZone("skills") },
+            { text: "Achievement Temple", action: () => navigateToZone("certifications") },
           ],
         })
         break
       case "skills":
         setDialogMessage({
           speaker: "Skill Master",
-          text: "Welcome to the Training Grounds. Here Mohammed hones his skills in cloud computing, AI, and DevOps.",
+          text: "Welcome to the Training Grounds. Let's find the Communication Crystal.",
           options: [
-            { text: "Find the Communication Crystal", action: () => navigateToZone("contact") },
-            { text: "Return to Town Square", action: () => navigateToZone("home") },
+            { text: "Communication Crystal", action: () => navigateToZone("contact") },
+            { text: "Creation Workshop", action: () => navigateToZone("projects") },
           ],
         })
         break
       case "contact":
         setDialogMessage({
           speaker: "Crystal Keeper",
-          text: "You've discovered the Communication Crystal. Through this magical artifact, you can connect with Mohammed.",
+          text: "You've discovered the Communication Crystal. Let's return to the Town Square.",
           options: [
-            { 
-              text: "Return to Town Square", 
-              action: () => navigateToZone("home") 
-            }
+            { text: "Town Square", action: () => navigateToZone("home") },
+            { text: "Training Grounds", action: () => navigateToZone("skills") },
           ],
         })
         break
@@ -607,7 +616,7 @@ export default function AdventureMode() {
                   : "bg-[#00CED1]/20 hover:bg-[#00CED1]/40 hover:border-[#00CED1]"
               } transition-colors justify-start text-left text-sm`}
             >
-              ▶ {option.text}
+              {index === 0 ? "▶" : "◀"} {option.text}
             </Button>
           ))}
         </div>
@@ -731,13 +740,32 @@ export default function AdventureMode() {
         {inventory.map((item) => (
           <div
             key={item.id}
-            className="bg-gray-800 p-2 rounded border border-gray-700 flex items-start gap-3 hover:border-indigo-600 cursor-pointer transition-colors"
+            className="bg-gray-800 p-2 rounded border border-gray-700 flex flex-col items-start gap-3 hover:border-indigo-600 cursor-pointer transition-colors"
           >
-            <div className="bg-indigo-900/50 p-2 rounded-lg">{item.icon}</div>
-            <div>
-              <h4 className="font-bold text-sm">{item.name}</h4>
-              <p className="text-xs text-gray-400">{item.description}</p>
+            <div className="flex items-start w-full">
+              <div className="bg-indigo-900/50 p-2 rounded-lg mr-3">{item.icon}</div>
+              <div>
+                <h4 className="font-bold text-sm">{item.name}</h4>
+                <p className="text-xs text-gray-400">{item.description}</p>
+              </div>
             </div>
+            
+            {item.certLink && (
+              <a 
+                href={item.certLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="mt-2 w-full"
+              >
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full text-xs border-indigo-700 hover:bg-indigo-900/50"
+                >
+                  View Certificate <ExternalLink className="ml-2 h-3 w-3" />
+                </Button>
+              </a>
+            )}
           </div>
         ))}
       </div>
