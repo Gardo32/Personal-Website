@@ -161,20 +161,6 @@ export default function AdventureMode() {
       icon: <Scroll className="h-5 w-5" />,
     },
     {
-      id: "aws-cert",
-      name: "AWS Certification Badge",
-      description: "Proof of cloud mastery from the AWS Academy",
-      icon: <Cloud className="h-5 w-5" />,
-      certLink: "https://www.credly.com/badges/1be5ff08-e148-4ffa-9f5b-807f917f0f7e/public_url",
-    },
-    {
-      id: "azure-cert",
-      name: "Azure AI Certificate",
-      description: "The legendary Azure AI Engineer certification",
-      icon: <Award className="h-5 w-5" />,
-      certLink: "https://learn.microsoft.com/api/credentials/share/en-us/MohammedAldaqaq-6809/E99B96AAB4D586B8?sharingId=95DBE1616EC92D0",
-    },
-    {
       id: "compass",
       name: "Portfolio Compass",
       description: "Points to Mohammed's best projects",
@@ -588,102 +574,35 @@ export default function AdventureMode() {
 
   const CurrentZoneComponent = zones[currentZone].component
 
-  // RPG-style dialog box - relocated to the left side to avoid overlapping with mini-map
+  // RPG-style dialog box - updated to match mobile view styling
   const dialogBox = dialogMessage && (
     <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="absolute bottom-4 left-4 w-[45%] max-w-md bg-[#2C3639]/95 p-4 rounded-lg border-2 border-[#8B4513] z-30 shadow-xl"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="absolute bottom-24 left-2 right-2 md:left-4 md:right-auto md:w-[45%] md:max-w-md bg-[#2C3639]/95 p-3 rounded-lg border-2 border-[#8B4513] z-30 shadow-xl"
     >
       {dialogMessage.speaker && (
-        <div className="bg-[#8B4513] -mt-8 px-4 py-1 rounded-full inline-block border border-[#DAA520] font-bold text-sm">
+        <div className="bg-[#8B4513] -mt-7 px-3 py-1 rounded-full inline-block border border-[#DAA520] font-bold text-xs">
           {dialogMessage.speaker}
         </div>
       )}
 
-      <p className="mb-4 text-[#F0E6D2] font-pixel leading-relaxed text-sm sm:text-base">{dialogMessage.text}</p>
+      <p className="mb-3 text-[#F0E6D2] font-pixel leading-tight text-sm">{dialogMessage.text}</p>
 
       {dialogMessage.options && (
-        <div className="flex flex-col gap-2 border-t border-[#8B4513] pt-2">
+        <div className="flex flex-wrap gap-2 border-t border-[#8B4513] pt-2">
           {dialogMessage.options.map((option, index) => (
-            <Button
+            <button
               key={index}
-              variant="outline"
               onClick={option.action}
-              className={`border-[#8B4513] ${
-                currentZone === "contact" 
-                  ? "bg-[#3F3F3F]/50 hover:bg-[#8B4513]/50 hover:border-[#DAA520]"
-                  : "bg-[#00CED1]/20 hover:bg-[#00CED1]/40 hover:border-[#00CED1]"
-              } transition-colors justify-start text-left text-sm`}
+              className="bg-[#3A2718] hover:bg-[#5D4037] px-3 py-1 rounded-md text-[#DAA520] hover:text-[#F0E6D2] cursor-pointer text-sm transition-colors flex-1 min-w-[100px] flex items-center justify-center"
             >
-              {index === 0 ? "▶" : "◀"} {option.text}
-            </Button>
+              <span className="mr-1">{index === 0 ? "▶" : "◀"}</span> {option.text}
+            </button>
           ))}
         </div>
       )}
     </motion.div>
-  )
-
-  // RPG-style status bars
-  const statusBars = (
-    <div className="absolute top-4 left-4 z-30 bg-gray-900/80 backdrop-blur-sm p-3 rounded-lg border border-gray-700 w-[calc(100%-8rem)] sm:w-64 max-w-xs">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="bg-indigo-900 px-2 py-1 rounded-full text-xs font-bold">Lv. {gameStats.level}</div>
-        <div className="text-sm font-bold">Portfolio Explorer</div>
-      </div>
-
-      {/* HP Bar */}
-      <div className="mb-2">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="flex items-center">
-            <Heart className="h-3 w-3 text-red-500 mr-1" /> HP
-          </span>
-          <span>
-            {gameStats.hp}/{gameStats.maxHp}
-          </span>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
-          <div
-            className="bg-gradient-to-r from-red-800 to-red-500 h-2.5 rounded-full"
-            style={{ width: `${(gameStats.hp / gameStats.maxHp) * 100}%` }}
-          ></div>
-        </div>
-      </div>
-
-      {/* MP Bar */}
-      <div className="mb-2">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="flex items-center">
-            <Sparkles className="h-3 w-3 text-blue-500 mr-1" /> MP
-          </span>
-          <span>
-            {gameStats.mp}/{gameStats.maxMp}
-          </span>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
-          <div
-            className="bg-gradient-to-r from-blue-800 to-blue-500 h-2.5 rounded-full"
-            style={{ width: `${(gameStats.mp / gameStats.maxMp) * 100}%` }}
-          ></div>
-        </div>
-      </div>
-
-      {/* EXP Bar */}
-      <div>
-        <div className="flex justify-between text-xs mb-1">
-          <span>EXP</span>
-          <span>
-            {gameStats.exp}/{gameStats.maxExp}
-          </span>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
-          <div
-            className="bg-gradient-to-r from-green-800 to-green-500 h-2.5 rounded-full"
-            style={{ width: `${(gameStats.exp / gameStats.maxExp) * 100}%` }}
-          ></div>
-        </div>
-      </div>
-    </div>
   )
 
   // RPG-style action buttons
@@ -855,7 +774,6 @@ export default function AdventureMode() {
       </AnimatePresence>
 
       {/* RPG UI Elements */}
-      {statusBars}
       {actionButtons}
       {dialogBox}
       {miniMap}

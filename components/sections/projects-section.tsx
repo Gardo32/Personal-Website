@@ -33,21 +33,20 @@ const projects = [
     link: "https://github.com/Gardo32/Py-Game",
   },
   {
-    id: "gpa-analytics",
-    name: "GPA Analytics",
-    description: "Streamlit-based tool for analyzing and visualizing academic performance data.",
-    tags: ["Streamlit", "Python", "Data Analysis"],
-    image: "/images/GPA-analytics.webp",
-    link: "https://github.com/Gardo32/gpa-analytics",
+    id: "nis",
+    name: "NCST Infrustructure Solutions (NIS)",
+    description: "Providing an environment that bridges both on-premises and cloud environments using containerization, combining cloud features and services with on-premises compliance. ",
+    tags: ["Cloud", "Infrustructure","Docker", "Docker Swarm"],
+    image: "/images/NIS.jpg",
   },
   {
-    id: "farmers-aid",
-    name: "Farmers Aid",
+    id: "Biopixel",
+    name: "Biopixel",
     description:
-      "Digital agriculture tool that helps farmers optimize crop yields using weather data and AI predictions.",
-    tags: ["Agriculture", "AI", "Streamlit"],
-    image: "/images/Farmers-aid.webp",
-    link: "https://github.com/Gardo32/Farmers-Aid",
+      "Powerful web-based platform for satellite vegetation analysis that helps users analyze, visualize, and extract agricultural insights from satellite imagery.",
+    tags: ["Agriculture", "AI", "Satellite Imagery"], 
+    image: "/images/biopixel.jpg",
+    link: "https://github.com/Gardo32/data-cosmos",
   },
 ]
 

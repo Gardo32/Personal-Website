@@ -159,20 +159,6 @@ export default function MobileRpgMode() {
       icon: <Scroll className="h-5 w-5" />,
     },
     {
-      id: "aws-cert",
-      name: "AWS Certification Badge",
-      description: "Proof of cloud mastery from the AWS Academy",
-      icon: <Cloud className="h-5 w-5" />,
-      certLink: "https://www.credly.com/badges/1be5ff08-e148-4ffa-9f5b-807f917f0f7e/public_url",
-    },
-    {
-      id: "azure-cert",
-      name: "Azure AI Certificate",
-      description: "The legendary Azure AI Engineer certification",
-      icon: <Award className="h-5 w-5" />,
-      certLink: "https://learn.microsoft.com/api/credentials/share/en-us/MohammedAldaqaq-6809/E99B96AAB4D586B8?sharingId=95DBE1616EC92D0",
-    },
-    {
       id: "compass",
       name: "Portfolio Compass",
       description: "Points to Mohammed's best projects",
@@ -193,6 +179,22 @@ export default function MobileRpgMode() {
     img.crossOrigin = "anonymous"
     img.onload = () => {
       avatarRef.current = img
+    }
+    img.onerror = () => {
+      // Fallback to a colored rectangle if image fails to load
+      const canvas = document.createElement('canvas')
+      canvas.width = 24
+      canvas.height = 24
+      const ctx = canvas.getContext('2d')
+      if (ctx) {
+        ctx.fillStyle = '#4D7EA8'
+        ctx.fillRect(0, 0, 24, 24)
+        ctx.fillStyle = '#FFFFFF'
+        ctx.fillRect(8, 8, 8, 8)
+        const img = new Image()
+        img.src = canvas.toDataURL()
+        avatarRef.current = img
+      }
     }
   }, [])
 
@@ -478,31 +480,31 @@ export default function MobileRpgMode() {
   // Remove the mobileControls completely
   const mobileControls = null;
 
-  // Update the dialog box - positioned lower
+  // Update the dialog box with navigation arrows
   const dialogBox = dialogMessage && (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute bottom-28 left-4 right-4 bg-[#2C3639]/95 p-4 rounded-lg border-2 border-[#8B4513] z-30 shadow-xl"
+      className="absolute bottom-24 left-2 right-2 bg-[#2C3639]/95 p-3 rounded-lg border-2 border-[#8B4513] z-30 shadow-xl"
     >
       {dialogMessage.speaker && (
-        <div className="bg-[#8B4513] -mt-8 px-4 py-1 rounded-full inline-block border border-[#DAA520] font-bold text-sm">
+        <div className="bg-[#8B4513] -mt-7 px-3 py-1 rounded-full inline-block border border-[#DAA520] font-bold text-xs">
           {dialogMessage.speaker}
         </div>
       )}
 
-      <p className="mb-4 text-[#F0E6D2] font-pixel leading-tight text-sm">{dialogMessage.text}</p>
+      <p className="mb-3 text-[#F0E6D2] font-pixel leading-tight text-sm">{dialogMessage.text}</p>
 
       {dialogMessage.options && (
-        <div className="flex flex-col gap-2 border-t border-[#8B4513] pt-2">
+        <div className="flex flex-wrap gap-2 border-t border-[#8B4513] pt-2">
           {dialogMessage.options.map((option, index) => (
-            <span
+            <button
               key={index}
               onClick={option.action}
-              className="text-[#DAA520] hover:text-[#F0E6D2] cursor-pointer text-sm"
+              className="bg-[#3A2718] hover:bg-[#5D4037] px-3 py-1 rounded-md text-[#DAA520] hover:text-[#F0E6D2] cursor-pointer text-sm transition-colors flex-1 min-w-[100px] flex items-center justify-center"
             >
-              {index === 0 ? "▶" : "◀"} {option.text}
-            </span>
+              <span className="mr-1">{index === 0 ? "▶" : "◀"}</span> {option.text}
+            </button>
           ))}
         </div>
       )}
@@ -511,21 +513,39 @@ export default function MobileRpgMode() {
 
   // Add a new handler to move character when clicking/tapping on the canvas
   const handleCanvasClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
     // Get canvas element and its dimensions
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     // Get click/touch position 
     const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-    const clientY = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    let clientX, clientY;
+    
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = (e as React.MouseEvent).clientX;
+      clientY = (e as React.MouseEvent).clientY;
+    }
     
     // Convert to percentage position
-    const percentX = ((clientX - rect.left) / canvas.width) * 100;
-    const percentY = ((clientY - rect.top) / canvas.height) * 100;
+    const percentX = ((clientX - rect.left) / rect.width) * 100;
+    const percentY = ((clientY - rect.top) / rect.height) * 100;
     
-    // Set new character position directly
+    // Set new character position with smooth animation
+    setIsMoving(true);
+    setDirection(
+      percentX > characterPosition.x ? "right" : 
+      percentX < characterPosition.x ? "left" : 
+      percentY > characterPosition.y ? "down" : "up"
+    );
+    
     setCharacterPosition({ x: percentX, y: percentY });
+    setTimeout(() => setIsMoving(false), 300);
     
     // Check if near a zone
     checkZoneProximity();
@@ -570,24 +590,35 @@ export default function MobileRpgMode() {
     document.addEventListener("touchend", handleTouchEnd);
   };
 
-  // Updated mobile menu button that includes both inventory and quest log
+  // Updated mobile menu button that includes both inventory and quest log - with better positioning
   const mobileMenuButton = (
-    <div className="absolute bottom-4 right-4 z-30 flex gap-2">
+    <div className="absolute bottom-6 right-6 z-30 flex gap-3">
       <Button
         variant="outline"
         size="icon"
         onClick={() => handleMenuItemClick("quest")}
-        className="w-14 h-14 bg-gray-900/80 border-gray-700 rounded-full"
+        className="w-14 h-14 bg-gray-900/90 border-gray-700 rounded-full shadow-lg"
+        title="Quest Log"
       >
-        <Scroll className="h-8 w-8" />
+        <Scroll className="h-7 w-7" />
       </Button>
       <Button
         variant="outline"
         size="icon"
         onClick={() => handleMenuItemClick("inventory")}
-        className="w-14 h-14 bg-gray-900/80 border-gray-700 rounded-full"
+        className="w-14 h-14 bg-gray-900/90 border-gray-700 rounded-full shadow-lg"
+        title="Inventory"
       >
-        <Backpack className="h-8 w-8" />
+        <Backpack className="h-7 w-7" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handleMenuItemClick("map")}
+        className="w-14 h-14 bg-gray-900/90 border-gray-700 rounded-full shadow-lg"
+        title="Map"
+      >
+        <Map className="h-7 w-7" />
       </Button>
     </div>
   )
@@ -595,38 +626,57 @@ export default function MobileRpgMode() {
   // Simplified mobile menu - remove the old menu system
   const mobileMenu = null; // Removing the menu popup
 
-  // RPG-style status bar - simplified for mobile
+  // RPG-style status bar - improved for mobile with exp bar
   const statusBars = (
-    <div className="absolute top-0 left-0 right-0 z-30 bg-gray-900/80 backdrop-blur-sm p-2 flex items-center">
-      <div className="bg-indigo-900 px-2 py-1 rounded-full text-xs font-bold mr-2">Lv. {gameStats.level}</div>
-      
-      {/* HP Bar */}
-      <div className="flex-1 mr-2">
-        <div className="flex justify-between text-xs items-center">
-          <span className="flex items-center">
-            <Heart className="h-3 w-3 text-red-500 mr-1" /> {gameStats.hp}/{gameStats.maxHp}
-          </span>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2">
-          <div
-            className="bg-gradient-to-r from-red-800 to-red-500 h-2 rounded-full"
-            style={{ width: `${(gameStats.hp / gameStats.maxHp) * 100}%` }}
-          ></div>
+    <div className="absolute top-0 left-0 right-0 z-30 bg-gray-900/90 backdrop-blur-sm p-2 flex flex-col">
+      {/* Top row with level and exp */}
+      <div className="flex items-center mb-1">
+        <div className="bg-indigo-900 px-2 py-1 rounded-full text-xs font-bold mr-2">Lv. {gameStats.level}</div>
+        <div className="flex-1">
+          <div className="flex justify-between text-xs items-center">
+            <span className="flex items-center">
+              <span className="text-yellow-500 mr-1">EXP</span> {gameStats.exp}/{gameStats.maxExp}
+            </span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-yellow-800 to-yellow-500 h-2 rounded-full"
+              style={{ width: `${(gameStats.exp / gameStats.maxExp) * 100}%` }}
+            ></div>
+          </div>
         </div>
       </div>
-
-      {/* MP Bar */}
-      <div className="flex-1">
-        <div className="flex justify-between text-xs items-center">
-          <span className="flex items-center">
-            <Sparkles className="h-3 w-3 text-blue-500 mr-1" /> {gameStats.mp}/{gameStats.maxMp}
-          </span>
+      
+      {/* Bottom row with HP and MP */}
+      <div className="flex">
+        {/* HP Bar */}
+        <div className="flex-1 mr-2">
+          <div className="flex justify-between text-xs items-center">
+            <span className="flex items-center">
+              <Heart className="h-3 w-3 text-red-500 mr-1" /> {gameStats.hp}/{gameStats.maxHp}
+            </span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-red-800 to-red-500 h-2 rounded-full"
+              style={{ width: `${(gameStats.hp / gameStats.maxHp) * 100}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2">
-          <div
-            className="bg-gradient-to-r from-blue-800 to-blue-500 h-2 rounded-full"
-            style={{ width: `${(gameStats.mp / gameStats.maxMp) * 100}%` }}
-          ></div>
+
+        {/* MP Bar */}
+        <div className="flex-1">
+          <div className="flex justify-between text-xs items-center">
+            <span className="flex items-center">
+              <Sparkles className="h-3 w-3 text-blue-500 mr-1" /> {gameStats.mp}/{gameStats.maxMp}
+            </span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-blue-800 to-blue-500 h-2 rounded-full"
+              style={{ width: `${(gameStats.mp / gameStats.maxMp) * 100}%` }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>
@@ -641,7 +691,7 @@ export default function MobileRpgMode() {
     </div>
   )
 
-  // Inventory panel for mobile
+  // Inventory panel for mobile - simplified
   const inventoryPanel = currentMenuItem === "inventory" && (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -660,29 +710,27 @@ export default function MobileRpgMode() {
         {inventory.map((item) => (
           <div
             key={item.id}
-            className="bg-gray-800 p-2 rounded border border-gray-700 flex flex-col items-start gap-3 hover:border-indigo-600 active:bg-gray-700 transition-colors"
+            className="bg-gray-800 p-2 rounded border border-gray-700 flex items-center hover:border-indigo-600 active:bg-gray-700 transition-colors"
           >
-            <div className="flex items-start w-full">
-              <div className="bg-indigo-900/50 p-2 rounded-lg mr-3">{item.icon}</div>
-              <div>
-                <h4 className="font-bold text-sm">{item.name}</h4>
-                <p className="text-xs text-gray-400">{item.description}</p>
-              </div>
+            <div className="bg-indigo-900/50 p-2 rounded-lg mr-3">{item.icon}</div>
+            <div>
+              <h4 className="font-bold text-sm">{item.name}</h4>
+              <p className="text-xs text-gray-400">{item.description}</p>
             </div>
             
             {item.certLink && (
               <a 
                 href={item.certLink} 
                 target="_blank" 
-                rel="noopener noreferrer" 
-                className="mt-2 w-full"
+                rel="noopener noreferrer"
+                className="ml-auto"
               >
                 <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full text-xs border-indigo-700 hover:bg-indigo-900/50"
+                  variant="ghost" 
+                  size="sm"
+                  className="h-7 w-7 p-0"
                 >
-                  View Certificate <ExternalLink className="ml-2 h-3 w-3" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </Button>
               </a>
             )}
@@ -784,6 +832,9 @@ export default function MobileRpgMode() {
 
   const skillsPanel = null; // Remove the skills panel entirely
 
+  // Removed D-pad controls to rely only on touch and swipe navigation
+  const dPadControls = null;
+  
   return (
     <div
       className="h-screen w-screen overflow-hidden relative font-pixel text-white"
@@ -794,13 +845,13 @@ export default function MobileRpgMode() {
         backgroundRepeat: "no-repeat"
       }}
       onTouchStart={handleSwipe} // Attach swipe handler
-      onClick={handleCanvasClick} 
-      onTouchEnd={handleCanvasClick}
     >
       {/* Game canvas for RPG map and character */}
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 z-0" 
+        onClick={handleCanvasClick}
+        onTouchEnd={handleCanvasClick}
       />
 
       {/* Current zone content - Updated with slide-down animation */}
@@ -820,7 +871,7 @@ export default function MobileRpgMode() {
             transition={{ delay: 0.1, duration: 0.3 }}
             className="relative z-20 w-full h-full pt-20 pb-32 px-4 overflow-y-auto"
           >
-            <div className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700 shadow-xl">
+            <div className={`bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700 shadow-xl ${currentZone === "contact" ? "bg-gray-900/80 min-h-[calc(100vh-180px)]" : ""}`}>
               <CurrentZoneComponent mode="mobile-rpg" />
             </div>
           </motion.div>
@@ -831,7 +882,6 @@ export default function MobileRpgMode() {
       {statusBars}
       {locationIndicator}
       {mobileMenuButton}
-      {mobileMenu}
       {dialogBox}
       {inventoryPanel}
       {questLogPanel}

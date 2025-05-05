@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Award, Cloud, Server, Code, Cpu, ExternalLink } from "lucide-react"
 
 interface CertificationSectionProps {
-  mode?: "doom" | "netflix" | "adventure"
+  mode?: "doom" | "netflix" | "adventure" | "mobile-rpg"
   expanded?: boolean
   onSelect?: () => void
   onHover?: (id: string) => void
@@ -292,7 +292,7 @@ export default function CertificationsSection({
     />;
   }
   
-  if (mode === "adventure") {
+  if (mode === "adventure" || mode === "mobile-rpg") {
     return <AdventureCertifications />;
   }
   

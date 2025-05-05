@@ -116,7 +116,8 @@ export default function HeroSection({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Empty content as requested */}
+        <h1 className="text-4xl font-bold mb-2">Mohammed Aldaqaq</h1>
+        <h2 className="text-xl text-gray-400 mb-6">Devops Engineer Intern</h2>
       </motion.div>
     </div>
   )
