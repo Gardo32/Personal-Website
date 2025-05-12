@@ -13,7 +13,7 @@ import SkillsArchive from "@/components/sections/skills-archive"
 import ContactArchive from "@/components/sections/contact-archive"
 import AcademyArchives from "@/components/sections/academy-archives"
 import { Button } from "@/components/ui/button"
-import { Heart, Map, Scroll, Sparkles, Compass, Backpack, Cloud, ExternalLink, Wand2 } from "lucide-react"
+import { Heart, Sparkles } from "lucide-react"
 
 type Zone = "home" | "about" | "certifications" | "projects" | "skills" | "contact" | "education"
 
@@ -50,8 +50,6 @@ export default function MobileRpgMode() {
   const [characterPosition, setCharacterPosition] = useState({ x: 50, y: 80 })
   const [isMoving, setIsMoving] = useState(false)
   const [direction, setDirection] = useState<"left" | "right" | "up" | "down" | null>(null)
-  const [showMenu, setShowMenu] = useState(false)
-  const [currentMenuItem, setCurrentMenuItem] = useState<"inventory" | "quest" | "map" | "skills" | null>(null)
   const [gameStats, setGameStats] = useState<GameStats>({
     level: 1,
     exp: 0,
@@ -166,32 +164,10 @@ export default function MobileRpgMode() {
     },
   }
 
-  // RPG game items - enhanced with certification items
-  const inventory = [
-    {
-      id: "resume",
-      name: "Enchanted Parchment",
-      description: "A magical scroll containing the Artificer's history",
-      icon: <Scroll className="h-5 w-5 text-amber-300" />,
-    },
-    {
-      id: "compass",
-      name: "Artificer's Compass",
-      description: "Points to Mohammed's most powerful artifacts",
-      icon: <Compass className="h-5 w-5 text-amber-300" />,
-    },
-    {
-      id: "potion",
-      name: "Elixir of Knowledge",
-      description: "Reveals hidden technical abilities",
-      icon: <Sparkles className="h-5 w-5 text-teal-300" />,
-    },
-  ]
-
   // Load avatar image
   useEffect(() => {
     const img = new Image()
-    img.src = "/images/pixel-character.png" // Using the pixel character image
+    img.src = "/images/pixel-character.png" 
     img.crossOrigin = "anonymous"
     img.onload = () => {
       avatarRef.current = img
@@ -216,12 +192,30 @@ export default function MobileRpgMode() {
 
   // Initialize game
   useEffect(() => {
-    // Welcome message with Master Artificer instead of Town Elder
+    // Welcome message with Master Artificer
     setDialogMessage({
       speaker: "Master Artificer",
       text: "Welcome to the Artificer's Haven, the heart of Mohammed's portfolio realm. Let us explore the chronicles of this DevOps Artificer!",
       options: [{ text: "Character Lore", action: () => navigateToZone("about") }],
     })
+  }, [])
+
+  // Handle window resize for canvas dimensions
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current
+      if (canvas) {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+      }
+    }
+    
+    window.addEventListener('resize', handleResize)
+    handleResize() // Initial setup
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   // Animation loop for character
@@ -231,12 +225,6 @@ export default function MobileRpgMode() {
 
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-
-    // Set canvas dimensions to match mobile screen
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-
-    const tileSize = 24 // Smaller tile size for mobile
 
     // Draw simplified map with zones and paths
     const drawMap = () => {
@@ -262,7 +250,7 @@ export default function MobileRpgMode() {
 
       // Draw dirt paths between zones
       ctx.strokeStyle = "#8B4513" // Brown dirt path
-      ctx.lineWidth = tileSize * 0.6 // Thinner for mobile
+      ctx.lineWidth = 14 // Thicker for better visibility
       ctx.lineCap = "round"
       ctx.lineJoin = "round"
 
@@ -285,12 +273,12 @@ export default function MobileRpgMode() {
       Object.entries(zones).forEach(([zoneName, zone]) => {
         const x = (zone.x * canvas.width) / 100
         const y = (zone.y * canvas.height) / 100
-        const radius = tileSize * zone.radius
+        const radius = 24 * zone.radius // Bigger for better touch targets
 
         // Draw glowing effect for current zone
         if (zoneName === currentZone) {
           ctx.beginPath()
-          ctx.arc(x, y, radius + 4, 0, Math.PI * 2)
+          ctx.arc(x, y, radius + 8, 0, Math.PI * 2)
           ctx.fillStyle = `${zone.color}30` // Very transparent
           ctx.fill()
         }
@@ -306,12 +294,12 @@ export default function MobileRpgMode() {
 
         // Draw zone border
         ctx.strokeStyle = zone.color
-        ctx.lineWidth = 2
+        ctx.lineWidth = 3
         ctx.stroke()
 
         // Draw zone icon
         ctx.fillStyle = "#ffffff"
-        ctx.font = "12px monospace"
+        ctx.font = "16px monospace"
         ctx.textAlign = "center"
         ctx.textBaseline = "middle"
 
@@ -336,16 +324,16 @@ export default function MobileRpgMode() {
         // Draw shadow under character
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)"
         ctx.beginPath()
-        ctx.ellipse(x, y + 10, 8, 4, 0, 0, Math.PI * 2)
+        ctx.ellipse(x, y + 10, 12, 6, 0, 0, Math.PI * 2)
         ctx.fill()
 
         // Draw character
-        ctx.drawImage(avatarRef.current, x - 12, y - 18, 24, 24)
+        ctx.drawImage(avatarRef.current, x - 16, y - 24, 32, 32)
 
         // Draw small glow effect around character
         ctx.beginPath()
-        ctx.arc(x, y - 8, 16, 0, Math.PI * 2)
-        ctx.fillStyle = "rgba(218, 165, 32, 0.1)"
+        ctx.arc(x, y - 8, 24, 0, Math.PI * 2)
+        ctx.fillStyle = "rgba(218, 165, 32, 0.2)"
         ctx.fill()
       }
     }
@@ -379,10 +367,11 @@ export default function MobileRpgMode() {
   const checkZoneProximity = () => {
     Object.entries(zones).forEach(([zoneName, zonePos]) => {
       const distance = Math.sqrt(
-        Math.pow(characterPosition.x - zonePos.x, 2) + Math.pow(characterPosition.y - zonePos.y, 2),
+        Math.pow(characterPosition.x - zonePos.x, 2) + Math.pow(characterPosition.y - zonePos.y, 2)
       )
 
-      if (distance < 15 && zoneName !== currentZone) {
+      // Increased proximity threshold for better touch responsiveness
+      if (distance < 20 && zoneName !== currentZone) {
         navigateToZone(zoneName as Zone)
       }
     })
@@ -432,8 +421,6 @@ export default function MobileRpgMode() {
           ],
         })
         break
-
-      // Add new case for education section
       case "education":
         setDialogMessage({
           speaker: "Academy Archivist",
@@ -526,43 +513,32 @@ export default function MobileRpgMode() {
     gainExperience(50)
   }
 
-  const handleMenuItemClick = (item: "inventory" | "quest" | "map" | "skills") => {
-    if (currentMenuItem === item) {
-      setCurrentMenuItem(null)
-    } else {
-      setCurrentMenuItem(item)
-    }
-  }
-
   const CurrentZoneComponent = zones[currentZone].component
 
-  // Remove the mobileControls completely
-  const mobileControls = null
-
-  // Update the dialog box with navigation arrows - updated to match medieval theme
+  // Improved dialog box with better contrast and positioning
   const dialogBox = dialogMessage && (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute bottom-24 left-2 right-2 bg-stone-800/95 p-3 rounded-lg border-2 border-amber-600/50 z-30 shadow-xl"
+      className="absolute bottom-16 left-4 right-4 bg-stone-800/95 p-4 rounded-lg border-2 border-amber-600/50 z-30 shadow-xl"
     >
       {dialogMessage.speaker && (
-        <div className="bg-amber-900/80 -mt-7 px-3 py-1 rounded-full inline-block border border-amber-600/50 font-bold text-xs text-amber-300 font-serif">
+        <div className="bg-amber-900/80 -mt-8 px-3 py-1 rounded-full inline-block border border-amber-600/50 font-bold text-sm text-amber-300 font-serif">
           {dialogMessage.speaker}
         </div>
       )}
 
-      <p className="mb-3 text-amber-300 font-serif leading-tight text-sm">{dialogMessage.text}</p>
+      <p className="mb-4 text-amber-300 font-serif leading-tight text-base">{dialogMessage.text}</p>
 
       {dialogMessage.options && (
-        <div className="flex flex-wrap gap-2 border-t border-amber-600/30 pt-2">
+        <div className="flex flex-wrap gap-3 border-t border-amber-600/30 pt-3">
           {dialogMessage.options.map((option, index) => (
             <button
               key={index}
               onClick={option.action}
-              className="bg-amber-900/60 hover:bg-amber-800 px-3 py-1 rounded-md text-amber-300 hover:text-amber-200 cursor-pointer text-sm transition-colors flex-1 min-w-[100px] flex items-center justify-center font-serif border border-amber-600/50"
+              className="bg-amber-900/60 hover:bg-amber-800 px-4 py-2 rounded-md text-amber-300 hover:text-amber-200 cursor-pointer text-base transition-colors flex-1 min-w-[120px] flex items-center justify-center font-serif border border-amber-600/50"
             >
-              <span className="mr-1">{index === 0 ? "▶" : "◀"}</span> {option.text}
+              <span className="mr-2">{index === 0 ? "▶" : "◀"}</span> {option.text}
             </button>
           ))}
         </div>
@@ -570,9 +546,8 @@ export default function MobileRpgMode() {
     </motion.div>
   )
 
-  // Add a new handler to move character when clicking/tapping on the canvas
+  // Improved canvas click handler with better touch detection
   const handleCanvasClick = (e: React.MouseEvent | React.TouchEvent) => {
-    e.stopPropagation()
     e.preventDefault()
 
     // Get canvas element and its dimensions
@@ -583,12 +558,25 @@ export default function MobileRpgMode() {
     const rect = canvas.getBoundingClientRect()
     let clientX, clientY
 
-    if ("touches" in e && e.touches.length > 0) {
-      clientX = e.touches[0].clientX
-      clientY = e.touches[0].clientY
+    if ("touches" in e) {
+      if (e.touches.length > 0) {
+        clientX = e.touches[0].clientX
+        clientY = e.touches[0].clientY
+      } else {
+        // For touchend events
+        const touchEnd = e as unknown as React.TouchEvent
+        if (touchEnd.changedTouches && touchEnd.changedTouches.length > 0) {
+          clientX = touchEnd.changedTouches[0].clientX
+          clientY = touchEnd.changedTouches[0].clientY
+        } else {
+          return // No valid touch points
+        }
+      }
+    } else if ("clientX" in e) {
+      clientX = e.clientX
+      clientY = e.clientY
     } else {
-      clientX = (e as React.MouseEvent).clientX
-      clientY = (e as React.MouseEvent).clientY
+      return // No valid event data
     }
 
     // Convert to percentage position
@@ -601,10 +589,10 @@ export default function MobileRpgMode() {
       percentX > characterPosition.x
         ? "right"
         : percentX < characterPosition.x
-          ? "left"
-          : percentY > characterPosition.y
-            ? "down"
-            : "up",
+        ? "left"
+        : percentY > characterPosition.y
+        ? "down"
+        : "up"
     )
 
     setCharacterPosition({ x: percentX, y: percentY })
@@ -614,87 +602,63 @@ export default function MobileRpgMode() {
     checkZoneProximity()
   }
 
+  // Improved swipe handler with better touch detection
   const handleSwipe = (e: React.TouchEvent) => {
-    const touch = e.changedTouches[0]
+    if (!e.touches || e.touches.length === 0) return
+
+    const touch = e.touches[0]
     const startX = touch.clientX
     const startY = touch.clientY
-
-    let endX = 0
-    let endY = 0
+    
+    let endX = startX
+    let endY = startY
+    let isSwiping = false
 
     const handleTouchMove = (moveEvent: TouchEvent) => {
-      endX = moveEvent.touches[0].clientX
-      endY = moveEvent.touches[0].clientY
+      if (moveEvent.touches && moveEvent.touches.length > 0) {
+        endX = moveEvent.touches[0].clientX
+        endY = moveEvent.touches[0].clientY
+        isSwiping = true
+      }
     }
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (endEvent: TouchEvent) => {
+      if (!isSwiping) return
+      
       const deltaX = endX - startX
       const deltaY = endY - startY
-
-      if (Math.abs(deltaX) < Math.abs(deltaY) && deltaY < -30) {
-        // Swipe up
-        moveCharacter(0, -5)
-      } else if (Math.abs(deltaX) < Math.abs(deltaY) && deltaY > 30) {
-        // Swipe down
-        moveCharacter(0, 5)
-      } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 30) {
-        // Swipe right
-        moveCharacter(5, 0)
-      } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -30) {
-        // Swipe left
-        moveCharacter(-5, 0)
+      
+      // Only handle as swipe if there's significant movement
+      if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+        if (Math.abs(deltaX) < Math.abs(deltaY) && deltaY < -30) {
+          // Swipe up - larger movement for mobile
+          moveCharacter(0, -10)
+        } else if (Math.abs(deltaX) < Math.abs(deltaY) && deltaY > 30) {
+          // Swipe down
+          moveCharacter(0, 10)
+        } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 30) {
+          // Swipe right
+          moveCharacter(10, 0)
+        } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -30) {
+          // Swipe left
+          moveCharacter(-10, 0)
+        }
       }
 
       document.removeEventListener("touchmove", handleTouchMove)
       document.removeEventListener("touchend", handleTouchEnd)
     }
 
-    document.addEventListener("touchmove", handleTouchMove)
+    document.addEventListener("touchmove", handleTouchMove, { passive: false })
     document.addEventListener("touchend", handleTouchEnd)
   }
-
-  // Updated mobile menu button that includes both inventory and quest log - with better positioning
-  const mobileMenuButton = (
-    <div className="absolute bottom-6 right-6 z-30 flex gap-3">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => handleMenuItemClick("quest")}
-        className="w-14 h-14 bg-stone-800/90 border-amber-600/50 rounded-full shadow-lg text-amber-300 hover:bg-amber-900/60"
-        title="Quest Log"
-      >
-        <Scroll className="h-7 w-7" />
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => handleMenuItemClick("inventory")}
-        className="w-14 h-14 bg-stone-800/90 border-amber-600/50 rounded-full shadow-lg text-amber-300 hover:bg-amber-900/60"
-        title="Inventory"
-      >
-        <Backpack className="h-7 w-7" />
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => handleMenuItemClick("map")}
-        className="w-14 h-14 bg-stone-800/90 border-amber-600/50 rounded-full shadow-lg text-amber-300 hover:bg-amber-900/60"
-        title="Map"
-      >
-        <Map className="h-7 w-7" />
-      </Button>
-    </div>
-  )
-
-  // Simplified mobile menu - remove the old menu system
-  const mobileMenu = null // Removing the menu popup
 
   // RPG-style status bar - improved for mobile with exp bar
   const statusBars = (
     <div className="absolute top-0 left-0 right-0 z-30 bg-stone-800/90 backdrop-blur-sm p-2 flex flex-col">
       {/* Top row with level and exp */}
       <div className="flex items-center mb-1">
-        <div className="bg-amber-900/80 px-2 py-1 rounded-full text-xs font-bold mr-2 text-amber-300 border border-amber-600/50 font-serif">
+        <div className="bg-amber-900/80 px-3 py-1 rounded-full text-sm font-bold mr-2 text-amber-300 border border-amber-600/50 font-serif">
           Lv. {gameStats.level}
         </div>
         <div className="flex-1">
@@ -750,205 +714,11 @@ export default function MobileRpgMode() {
   // Location name indicator
   const locationIndicator = (
     <div className="absolute top-16 left-0 right-0 z-20 flex justify-center">
-      <div className="bg-stone-800/80 backdrop-blur-sm px-4 py-1 rounded-full border border-amber-600/50">
-        <span className="text-sm font-bold text-amber-300 font-serif">{zones[currentZone].name}</span>
+      <div className="bg-stone-800/80 backdrop-blur-sm px-4 py-2 rounded-full border border-amber-600/50">
+        <span className="text-base font-bold text-amber-300 font-serif">{zones[currentZone].name}</span>
       </div>
     </div>
   )
-
-  // Inventory panel for mobile - enhanced with medieval theme
-  const inventoryPanel = currentMenuItem === "inventory" && (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 left-4 right-4 z-40 bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl"
-      style={{ maxHeight: "40%", overflowY: "auto" }}
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-lg text-amber-400 font-serif">Artificer's Inventory</h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setCurrentMenuItem(null)}
-          className="h-6 w-6 p-0 text-amber-400 hover:text-amber-300"
-        >
-          ×
-        </Button>
-      </div>
-
-      <div className="space-y-2">
-        {inventory.map((item) => (
-          <motion.div
-            key={item.id}
-            className={`bg-stone-700/80 p-3 rounded-md border ${
-              item.special
-                ? "border-amber-500 shadow-[0_0_10px_rgba(218,165,32,0.3)]"
-                : "border-stone-600 hover:border-amber-600/70"
-            } transition-colors`}
-            whileHover={{ scale: 1.02 }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`${
-                  item.special ? "bg-amber-900/60 border-amber-600/70" : "bg-stone-800/80 border-stone-600"
-                } p-2 rounded-lg border-2`}
-              >
-                {item.icon}
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-amber-300 font-serif">{item.name}</h4>
-                <p className="text-xs text-stone-300 font-serif">{item.description}</p>
-              </div>
-            </div>
-
-            {item.certLink && (
-              <div className="mt-2 pt-2 border-t border-stone-600">
-                <a href={item.certLink} target="_blank" rel="noopener noreferrer" className="block w-full">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-xs border-amber-700/50 bg-amber-900/30 hover:bg-amber-900/60 text-amber-300 font-serif"
-                  >
-                    Examine Artifact <ExternalLink className="ml-2 h-3 w-3" />
-                  </Button>
-                </a>
-              </div>
-            )}
-
-            {item.special && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                <span className="text-xs bg-amber-900/60 text-amber-300 px-2 py-0.5 rounded-full border border-amber-600/50 font-serif">
-                  Legendary
-                </span>
-                {item.id === "aws-devops" && (
-                  <span className="text-xs bg-amber-900/60 text-amber-300 px-2 py-0.5 rounded-full border border-amber-600/50 font-serif">
-                    Youngest in GCC
-                  </span>
-                )}
-                {item.id === "azure-ai" && (
-                  <span className="text-xs bg-teal-900/60 text-teal-300 px-2 py-0.5 rounded-full border border-teal-600/50 font-serif">
-                    Youngest Bahraini
-                  </span>
-                )}
-              </div>
-            )}
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  )
-
-  // Quest log panel for mobile - enhanced with medieval theme
-  const questLogPanel = currentMenuItem === "quest" && (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 left-4 right-4 z-40 bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl"
-      style={{ maxHeight: "40%", overflowY: "auto" }}
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-lg text-amber-400 font-serif">Quest Scroll</h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setCurrentMenuItem(null)}
-          className="h-6 w-6 p-0 text-amber-400 hover:text-amber-300"
-        >
-          ×
-        </Button>
-      </div>
-
-      <div className="space-y-2">
-        {quests.map((quest, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded-md border flex items-start gap-3 ${
-              quest.completed ? "bg-amber-900/20 border-amber-700" : "bg-stone-700/80 border-stone-600"
-            }`}
-          >
-            <div
-              className={`p-1 rounded-full ${
-                quest.completed ? "bg-amber-700 text-amber-200" : "bg-stone-600 text-stone-300"
-              }`}
-            >
-              {quest.completed ? "✓" : "!"}
-            </div>
-            <div>
-              <h4 className={`font-bold text-sm font-serif ${quest.completed ? "text-amber-400" : "text-amber-300"}`}>
-                {quest.title}
-              </h4>
-              <p className="text-xs text-stone-400 font-serif">{quest.description}</p>
-              {quest.completed && <p className="text-xs text-amber-500 mt-1 font-serif italic">Quest completed!</p>}
-            </div>
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  )
-
-  // Update the map panel to be the items menu - enhanced with medieval theme
-  const mapPanel = currentMenuItem === "map" && (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 left-4 right-4 z-40 bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl flex flex-col items-center"
-      style={{ maxHeight: "40%", overflowY: "auto" }}
-    >
-      <div className="flex justify-between items-center w-full mb-4">
-        <h3 className="font-bold text-lg text-amber-400 font-serif">Magical Items</h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setCurrentMenuItem(null)}
-          className="h-6 w-6 p-0 text-amber-400 hover:text-amber-300"
-        >
-          ×
-        </Button>
-      </div>
-
-      <div className="w-full overflow-auto">
-        <div className="grid grid-cols-2 gap-2 w-full">
-          {inventory.map((item) => (
-            <div
-              key={item.id}
-              className={`bg-stone-700/80 p-3 rounded-md border ${
-                item.special ? "border-amber-500" : "border-stone-600 hover:border-amber-600/70"
-              } flex flex-col items-center gap-2 transition-colors`}
-            >
-              <div
-                className={`${
-                  item.special ? "bg-amber-900/60 border-amber-600/70" : "bg-stone-800/80 border-stone-600"
-                } p-3 rounded-full border-2`}
-              >
-                {item.icon}
-              </div>
-              <div className="text-center">
-                <h4 className="font-bold text-sm text-amber-300 font-serif">{item.name}</h4>
-                <p className="text-xs text-stone-400 font-serif">{item.description}</p>
-              </div>
-
-              {item.certLink && (
-                <a href={item.certLink} target="_blank" rel="noopener noreferrer" className="mt-1 w-full">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-xs border-amber-700/50 bg-amber-900/30 hover:bg-amber-900/60 text-amber-300 font-serif"
-                  >
-                    View <ExternalLink className="ml-1 h-3 w-3" />
-                  </Button>
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  )
-
-  const skillsPanel = null // Remove the skills panel entirely
-
-  // Removed D-pad controls to rely only on touch and swipe navigation
-  const dPadControls = null
 
   return (
     <div
@@ -960,12 +730,12 @@ export default function MobileRpgMode() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
-      onTouchStart={handleSwipe} // Attach swipe handler
+      onTouchStart={handleSwipe} 
     >
       {/* Game canvas for RPG map and character */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 touch-none"
         onClick={handleCanvasClick}
         onTouchEnd={handleCanvasClick}
       />
@@ -985,7 +755,7 @@ export default function MobileRpgMode() {
             initial={{ y: -50 }}
             animate={{ y: 0 }}
             transition={{ delay: 0.1, duration: 0.3 }}
-            className="relative z-20 w-full h-full pt-20 pb-32 px-4 overflow-y-auto"
+            className="relative z-20 w-full h-full pt-24 pb-32 px-4 overflow-y-auto"
           >
             <CurrentZoneComponent mode="mobile-rpg" />
           </motion.div>
@@ -996,10 +766,6 @@ export default function MobileRpgMode() {
       {statusBars}
       {locationIndicator}
       {dialogBox}
-      {mobileMenuButton}
-      {inventoryPanel}
-      {questLogPanel}
-      {mapPanel}
     </div>
   )
 }
