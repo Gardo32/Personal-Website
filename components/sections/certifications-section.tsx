@@ -47,13 +47,26 @@ const certifications = [
     link: "https://www.credly.com/badges/7be08fda-a868-4a4e-90d1-c70062f03ba0/public_url"
   },
   {
+    id: "aws-devops-engineer-pro",
+    name: "AWS Certified DevOps Engineer – Professional",
+    issuer: "Amazon Web Services",
+    date: "August - 2024", // Date can be updated
+    description: "Demonstrates expertise in provisioning, operating, and managing distributed application systems on the AWS platform.",
+    highlight: true,
+    highlightText: "First U-18 & Youngest in GCC",
+    image: "/images/cert-aws-devops-pro.jpg", // Placeholder image path
+    icon: <Code className="h-6 w-6 text-orange-400" />,
+    link: "https://www.credly.com/badges/7992031f-9a62-41cb-8363-509887423d45/public_url"
+  },
+  {
     id: "azure-ai-engineer",
     name: "Microsoft Certified: Azure AI Engineer Associate",
     issuer: "Microsoft",
     date: "June - 2024",
     description:
-      "Youngest Bahraini to earn this certification. Expertise in building, managing, and deploying AI solutions on Azure.",
+      "Expertise in building, managing, and deploying AI solutions on Azure.",
     highlight: true,
+    highlightText: "Youngest Bahraini Certified",
     image: "/images/cert-azure-ai.jpg",
     icon: <Award className="h-6 w-6 text-blue-400" />,
     link: "https://learn.microsoft.com/api/credentials/share/en-us/MohammedAldaqaq-6809/E99B96AAB4D586B8?sharingId=95DBE1616EC92D0"
@@ -109,7 +122,7 @@ function DoomCertifications() {
                   </p>
                 </div>
               </div>
-              {cert.highlight && <Badge className="mt-2 bg-purple-600">Youngest Bahraini Certified</Badge>}
+              {cert.highlight && <Badge className="mt-2 bg-purple-600">{cert.highlightText || "Special Achievement"}</Badge>}
             </motion.div>
           ))}
         </div>
@@ -154,7 +167,7 @@ function NetflixCertifications({
                     </div>
                   </div>
                   <p className="text-gray-300 text-sm">{cert.description}</p>
-                  {cert.highlight && <Badge className="mt-4 bg-purple-600">Youngest Bahraini Certified</Badge>}
+                  {cert.highlight && <Badge className="mt-4 bg-purple-600">{cert.highlightText || "Special Achievement"}</Badge>}
                 </CardContent>
               </Card>
             ))}
@@ -190,7 +203,7 @@ function NetflixCertifications({
               )}
 
               {cert.highlight && (
-                <Badge className="absolute bottom-3 left-3 bg-purple-600 text-xs">Youngest Bahraini</Badge>
+                <Badge className="absolute bottom-3 left-3 bg-purple-600 text-xs">{ cert.highlightText || "Special" }</Badge>
               )}
             </div>
           ))}
@@ -248,7 +261,7 @@ function AdventureCertifications() {
                     className="mt-2"
                   >
                     <p className="text-sm text-gray-300 mt-2">{cert.description}</p>
-                    {cert.highlight && <Badge className="mt-2 bg-purple-600">Youngest Bahraini Certified</Badge>}
+                    {cert.highlight && <Badge className="mt-2 bg-purple-600">{cert.highlightText || "Special Achievement"}</Badge>}
                     
                     {cert.link && (
                       <div className="mt-3">
