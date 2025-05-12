@@ -95,6 +95,12 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+  body {
+    @apply font-pixel bg-stone-800/70 backdrop-blur-md text-amber-300;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-amber-300;
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

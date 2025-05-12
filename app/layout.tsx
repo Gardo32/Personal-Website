@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="font-pixel bg-stone-800/70 backdrop-blur-md text-amber-300">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ModeProvider>
             {children}
