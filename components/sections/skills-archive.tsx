@@ -47,13 +47,6 @@ const skillsWithIcons = {
     { name: "YAML", icon: <Code className="h-4 w-4 mr-1" /> },
     { name: "New Relic", icon: <FileCode className="h-4 w-4 mr-1" /> },
   ],
-  apiTools: [
-    { name: "Azure Cognitive Services", icon: <Cpu className="h-4 w-4 mr-1" /> },
-    { name: "OpenAI API", icon: <Cpu className="h-4 w-4 mr-1" /> },
-    { name: "JSON parsing", icon: <Braces className="h-4 w-4 mr-1" /> },
-    { name: "Webhooks", icon: <Globe className="h-4 w-4 mr-1" /> },
-    { name: "AI model integration", icon: <Cpu className="h-4 w-4 mr-1" /> },
-  ],
 }
 
 export default function SkillsArchive({ mode = "roguelike" }: SkillsArchiveProps) {
@@ -315,61 +308,6 @@ export default function SkillsArchive({ mode = "roguelike" }: SkillsArchiveProps
             </motion.div>
 
             {/* APIs & AI Tools */}
-            <motion.div
-              className={`relative p-5 rounded-md cursor-pointer transition-all duration-300 ease-in-out shadow-md
-                ${
-                  activeCategory === "api"
-                    ? "border-amber-500 bg-amber-900/40 scale-105"
-                    : "border-stone-600 bg-stone-700/60 hover:border-amber-600/70"
-                } border-2
-              `}
-              onClick={() => setActiveCategory(activeCategory === "api" ? null : "api")}
-              whileHover={{ scale: activeCategory === "api" ? 1.05 : 1.03 }}
-              layout
-            >
-              {/* Category Icon */}
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-full bg-amber-700/30 flex items-center justify-center border-2 border-amber-600/50 shadow-inner">
-                  <Wand2 className="h-6 w-6 text-amber-300" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-amber-300 font-serif">APIs & AI Tools</h3>
-                  <p className="text-sm text-stone-400 italic font-serif">Conduits of artificial wisdom</p>
-                </div>
-              </div>
-
-              {/* Decorative Divider */}
-              <div className="flex items-center justify-center mb-3">
-                <div className="h-[2px] w-16 bg-stone-600/70"></div>
-                <Scroll className="mx-2 h-4 w-4 text-amber-500" />
-                <div className="h-[2px] w-16 bg-stone-600/70"></div>
-              </div>
-
-              {/* Skills List */}
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out
-                  ${activeCategory === "api" ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
-                `}
-              >
-                <div className="flex flex-wrap justify-center gap-2 mt-3 border-t-2 border-stone-600/70 pt-4">
-                  {skillsWithIcons.apiTools.map((skill) => (
-                    <Badge
-                      key={skill.name}
-                      className="bg-amber-900/60 text-amber-300 hover:bg-amber-800 border border-amber-600/50 flex items-center px-3 py-1 text-sm font-serif"
-                    >
-                      {skill.icon} {skill.name}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {/* Click to Expand Hint */}
-              {activeCategory !== "api" && (
-                <div className="text-center text-amber-400/70 text-xs mt-2 italic font-serif">
-                  *Click to reveal these arcane interfaces*
-                </div>
-              )}
-            </motion.div>
           </div>
 
           {/* Decorative Map Elements */}

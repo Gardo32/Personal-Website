@@ -22,6 +22,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  output: 'standalone', // Add standalone output option for containerization
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,

@@ -71,7 +71,7 @@ function RoguelikeMapArchives() {
 
               {/* Location Name */}
               <div className="mt-6 text-center mb-4">
-                <h3 className="font-bold text-xl text-amber-300 font-serif">The Grand Archives of Nasser</h3>
+                <h3 className="font-bold text-xl text-amber-300 font-serif">Nasser Centre for Science and Technology</h3>
                 <p className="text-sm text-stone-400 italic mt-1 font-serif">Years of Study: 2022 - 2025</p>
               </div>
 
@@ -139,7 +139,7 @@ function RoguelikeMapArchives() {
 
               {/* Location Name */}
               <div className="mt-6 text-center mb-4">
-                <h3 className="font-bold text-xl text-teal-300 font-serif">The Gulf Ari Artificer's Guild</h3>
+                <h3 className="font-bold text-xl text-teal-300 font-serif">Gulf Air Group (GFG) - Apprenticeship (OJT)</h3>
                 <p className="text-sm text-stone-400 italic mt-1 font-serif">11th Moon – 28th Moon, Year 2025</p>
               </div>
 
