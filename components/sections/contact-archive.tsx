@@ -111,7 +111,7 @@ export default function ContactArchive({ mode = "roguelike" }: ContactArchivePro
                 className="p-5 rounded-md border-2 border-amber-600/50 bg-amber-900/30 shadow-md"
               >
                 <a
-                  href="mailto:Gardodaqqaq@gmail.com"
+                  href="mailto:Mohammed@aldaqaq.com"
                   className="flex flex-col items-center gap-3 text-amber-300 hover:text-amber-200 transition-colors"
                 >
                   <div className="w-12 h-12 rounded-full bg-amber-700/50 flex items-center justify-center border-2 border-amber-600/50 shadow-inner">

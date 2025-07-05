@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { useMode } from "@/components/mode-provider"
 import HeroArchive from "@/components/sections/hero-archive"
 import AboutArchive from "@/components/sections/about-archive"
@@ -44,7 +45,8 @@ interface QuestLog {
 }
 
 export default function AdventureMode() {
-  const { isMobile } = useMode()
+  const isMobile = useIsMobile()
+  const { mode } = useMode()
   const [currentZone, setCurrentZone] = useState<Zone>("home")
   const [dialogMessage, setDialogMessage] = useState<DialogMessage | null>(null)
   const [characterPosition, setCharacterPosition] = useState({ x: 50, y: 80 })
@@ -983,7 +985,7 @@ export default function AdventureMode() {
       className="h-screen w-screen overflow-hidden relative font-serif text-amber-300"
       style={{
         backgroundImage:
-          "url('https://c4.wallpaperflare.com/wallpaper/916/248/841/board-dragons-dungeons-fantasy-wallpaper-preview.jpg')",
+          "url('/images/board-dragons-dungeons-fantasy-wallpaper-preview.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

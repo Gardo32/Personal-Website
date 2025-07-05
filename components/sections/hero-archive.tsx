@@ -78,7 +78,7 @@ export default function HeroArchive({ mode = "roguelike" }: HeroArchiveProps) {
                   <Github className="h-5 w-5" />
                 </Button>
               </a>
-              <a href="mailto:Gardodaqqaq@gmail.com">
+              <a href="mailto:Mohammed@aldaqaq.com">
                 <Button
                   variant="outline"
                   size="icon"
