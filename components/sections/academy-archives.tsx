@@ -14,7 +14,7 @@ interface AcademyArchivesProps {
 }
 
 // Medieval Roguelike Map version - now the default for all modes
-function RoguelikeMapArchives() {
+function RoguelikeMapArchives({ mode }: { mode?: string }) {
   const [activeLocation, setActiveLocation] = useState<string | null>(null)
 
   return (
@@ -208,5 +208,5 @@ export default function AcademyArchives({
   hoveredItem,
 }: AcademyArchivesProps) {
   // Always use the roguelike map style regardless of mode
-  return <RoguelikeMapArchives />
+  return <RoguelikeMapArchives mode={mode} />
 }

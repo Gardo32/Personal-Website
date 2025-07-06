@@ -97,38 +97,43 @@ export default function MobileRpgMode() {
       }}
     >
       <div className="relative z-10 flex flex-col h-full">
-        <div className="flex flex-1 overflow-hidden">
-          {/* Main Content */}
-          <main className="flex-1 p-4 overflow-y-auto bg-black/30 backdrop-blur-sm">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentZone}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                <CurrentZoneComponent mode="mobile-rpg" />
-              </motion.div>
-            </AnimatePresence>
-          </main>
-        </div>
+        {/* Header */}
+        <header className="p-3 bg-stone-900/50 backdrop-blur-sm border-b-2 border-amber-600/30 text-center shadow-lg">
+          <h1 className="text-xl font-bold text-amber-300 tracking-wider">
+            {zones[currentZone].name}
+          </h1>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 p-2 md:p-4 overflow-y-auto custom-scrollbar">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentZone}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="h-full"
+            >
+              <CurrentZoneComponent mode="mobile-rpg" />
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
         {/* Footer Taskbar */}
-        <footer className="p-3 bg-stone-800/80 backdrop-blur-sm border-t-2 border-amber-600/30 flex justify-center space-x-4 shadow-lg overflow-x-auto">
+        <footer className="p-2 bg-stone-900/50 backdrop-blur-sm border-t-2 border-amber-600/30 flex flex-wrap justify-center items-center shadow-lg gap-2">
           {zoneOrder.map((zoneKey, index) => (
             <div
               key={zoneKey}
               onClick={() => navigateToZone(index)}
-              className={`w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center text-3xl transition-all duration-300 cursor-pointer ${
+              className={`w-14 h-14 rounded-lg flex flex-col items-center justify-center text-2xl transition-all duration-300 cursor-pointer ${
                 index === currentZoneIndex
-                  ? "bg-amber-500/80 border-2 border-amber-300 scale-110 shadow-lg"
+                  ? "bg-amber-500/80 border-2 border-amber-300 scale-110 shadow-lg -translate-y-1"
                   : "bg-stone-700/50 border-2 border-stone-600"
               }`}
               title={zones[zoneKey].name}
             >
-              {zones[zoneKey].icon}
+              <span>{zones[zoneKey].icon}</span>
             </div>
           ))}
         </footer>

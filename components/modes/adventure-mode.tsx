@@ -190,6 +190,22 @@ export default function AdventureMode() {
       description: "Reveals hidden technical abilities",
       icon: <Sparkles className="h-5 w-5 text-teal-300" />,
     },
+    {
+      id: "aws-devops",
+      name: "AWS DevOps Rune",
+      description: "A powerful rune from the AWS realm, signifying mastery over DevOps.",
+      icon: <Cloud className="h-5 w-5 text-orange-400" />,
+      certLink: "https://www.credly.com/badges/2563b58a-403e-4873-a111-9f4b3a3d86a1/public_url",
+      special: true,
+    },
+    {
+      id: "azure-ai",
+      name: "Azure AI Scroll",
+      description: "An ancient scroll from the Azure kingdom, granting powers of Artifical Intellect.",
+      icon: <Wand2 className="h-5 w-5 text-blue-400" />,
+      certLink: "https://www.credly.com/badges/e51e29a3-9173-4950-9713-591547591769/public_url",
+      special: true,
+    },
   ]
 
   // Load avatar image
@@ -723,7 +739,7 @@ export default function AdventureMode() {
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute bottom-24 left-2 right-2 md:left-4 md:right-auto md:w-[45%] md:max-w-md bg-stone-800/95 p-4 rounded-lg border-2 border-amber-600/50 z-30 shadow-xl"
+      className="absolute bottom-24 left-2 right-2 md:left-4 md:right-auto md:w-[45%] lg:w-[30%] md:max-w-md bg-stone-800/95 p-4 rounded-lg border-2 border-amber-600/50 z-30 shadow-xl"
     >
       {dialogMessage.speaker && (
         <div className="bg-amber-900/80 -mt-8 px-3 py-1 rounded-full inline-block border border-amber-600/50 font-bold text-xs text-amber-300 font-serif">
@@ -789,7 +805,7 @@ export default function AdventureMode() {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 right-4 z-40 bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl w-72"
+      className="bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl"
       style={{ maxHeight: "calc(100vh - 140px)", overflowY: "auto" }}
     >
       <div className="flex justify-between items-center mb-4">
@@ -871,7 +887,7 @@ export default function AdventureMode() {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-20 right-4 z-40 bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl w-72"
+      className="bg-stone-800/95 backdrop-blur-md p-4 rounded-lg border-2 border-amber-600/50 shadow-xl"
       style={{ maxHeight: "calc(100vh - 140px)", overflowY: "auto" }}
     >
       <div className="flex justify-between items-center mb-4">
@@ -928,13 +944,13 @@ export default function AdventureMode() {
 
   // RPG-style status bar - updated to match medieval theme
   const statusBar = (
-    <div className="absolute top-0 left-0 right-0 z-20 bg-stone-800/90 backdrop-blur-sm p-2 flex items-center">
-      <div className="bg-amber-900/80 px-2 py-1 rounded-full text-xs font-bold mr-2 text-amber-300 border border-amber-600/50 font-serif">
+    <div className="absolute top-0 left-0 right-0 z-20 bg-stone-800/90 backdrop-blur-sm p-2 flex flex-wrap items-center">
+      <div className="bg-amber-900/80 px-2 py-1 rounded-full text-xs font-bold mr-2 text-amber-300 border border-amber-600/50 font-serif mb-2 sm:mb-0">
         Lv. {gameStats.level}
       </div>
 
       {/* HP Bar */}
-      <div className="flex-1 mr-2">
+      <div className="flex-1 mr-2 min-w-[150px] mb-2 sm:mb-0">
         <div className="flex justify-between text-xs items-center">
           <span className="flex items-center text-amber-300 font-serif">
             <Heart className="h-3 w-3 text-red-500 mr-1" /> {gameStats.hp}/{gameStats.maxHp}
@@ -949,7 +965,7 @@ export default function AdventureMode() {
       </div>
 
       {/* MP Bar */}
-      <div className="flex-1 mr-2">
+      <div className="flex-1 mr-2 min-w-[150px] mb-2 sm:mb-0">
         <div className="flex justify-between text-xs items-center">
           <span className="flex items-center text-amber-300 font-serif">
             <Sparkles className="h-3 w-3 text-blue-500 mr-1" /> {gameStats.mp}/{gameStats.maxMp}
@@ -964,7 +980,7 @@ export default function AdventureMode() {
       </div>
 
       {/* EXP Bar */}
-      <div className="flex-1">
+      <div className="flex-1 min-w-[150px]">
         <div className="flex justify-between text-xs items-center">
           <span className="flex items-center text-amber-300 font-serif">
             <span className="text-amber-500 mr-1">EXP</span> {gameStats.exp}/{gameStats.maxExp}
@@ -982,43 +998,82 @@ export default function AdventureMode() {
 
   return (
     <div
-      className="h-screen w-screen overflow-hidden relative font-serif text-amber-300"
+      className="relative w-full h-screen overflow-hidden bg-stone-900 font-sans"
+      onTouchMove={handleTouchMove}
       style={{
-        backgroundImage:
-          "url('/images/board-dragons-dungeons-fantasy-wallpaper-preview.jpg')",
+        backgroundImage: `url("/images/board-dragons-dungeons-fantasy-wallpaper-preview.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
       }}
-      onTouchMove={handleTouchMove}
     >
-      {/* Game canvas for RPG map and character */}
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
-      {/* Current zone content - balanced position */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentZone}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="absolute inset-0 flex items-center justify-center z-10"
-        >
-          <div className="absolute inset-0 bg-stone-900/80" />
-          <div className="relative z-20 w-[60%] max-w-3xl ml-[20%] px-4 py-20">
-            <CurrentZoneComponent mode="adventure" />
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* RPG UI Elements */}
       {statusBar}
       {actionButtons}
       {dialogBox}
+
+      {/* Side Panels */}
+      <AnimatePresence>
+        {inventoryPanel && (
+          <motion.div
+            className="absolute top-16 right-4 z-40 w-[300px]"
+            initial={{ x: 320 }}
+            animate={{ x: 0 }}
+            exit={{ x: 320 }}
+            transition={{ ease: "easeInOut", duration: 0.3 }}
+          >
+            {inventoryPanel}
+          </motion.div>
+        )}
+        {questLogPanel && (
+          <motion.div
+            className="absolute top-16 right-4 z-40 w-[300px]"
+            initial={{ x: 320 }}
+            animate={{ x: 0 }}
+            exit={{ x: 320 }}
+            transition={{ ease: "easeInOut", duration: 0.3 }}
+          >
+            {questLogPanel}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {miniMap}
-      {inventoryPanel}
-      {questLogPanel}
+
+      {/* Main Content Area */}
+      <div className="absolute inset-0 overflow-hidden z-10 pointer-events-none">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentZone}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  duration: 0.5,
+                  ease: "easeInOut",
+                  staggerChildren: 0.1,
+                  when: "beforeChildren",
+                },
+              },
+              exit: { opacity: 0 },
+            }}
+            className="w-full h-full pointer-events-auto overflow-y-auto"
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <CurrentZoneComponent />
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

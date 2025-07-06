@@ -58,11 +58,15 @@ export default function ProjectsArchive({ mode = "roguelike" }: ProjectsArchiveP
         className="relative"
       >
         {/* Map Title Banner */}
-        <div className="relative mb-8 text-center">
-          <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-800 rounded-md -skew-x-3 transform -rotate-1"></div>
-          <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-700 rounded-md skew-x-2 transform rotate-1"></div>
-          <h2 className="relative text-3xl font-bold text-amber-400 tracking-wider py-4 font-serif">Quest Journal</h2>
-        </div>
+        {mode !== "mobile-rpg" && (
+          <div className="relative mb-8 text-center">
+            <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-800 rounded-md -skew-x-3 transform -rotate-1"></div>
+            <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-700 rounded-md skew-x-2 transform rotate-1"></div>
+            <h2 className="relative text-3xl font-bold text-amber-400 tracking-wider py-4 font-serif">
+              Quest Journal
+            </h2>
+          </div>
+        )}
 
         {/* Map Background */}
         <div className="relative bg-stone-800/90 rounded-xl p-6 border-2 border-stone-600 shadow-xl overflow-hidden">

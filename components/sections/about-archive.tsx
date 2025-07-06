@@ -4,10 +4,10 @@ import { motion } from "framer-motion"
 import { Compass, Scroll, MapPin } from "lucide-react"
 
 interface AboutArchiveProps {
-  mode?: string // Support any mode, but always use roguelike style
+  mode?: string
 }
 
-export default function AboutArchive({ mode = "roguelike" }: AboutArchiveProps) {
+export default function AboutArchive({ mode }: AboutArchiveProps) {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <motion.div
@@ -17,11 +17,15 @@ export default function AboutArchive({ mode = "roguelike" }: AboutArchiveProps) 
         className="relative"
       >
         {/* Map Title Banner */}
-        <div className="relative mb-8 text-center">
-          <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-800 rounded-md -skew-x-3 transform -rotate-1"></div>
-          <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-700 rounded-md skew-x-2 transform rotate-1"></div>
-          <h2 className="relative text-3xl font-bold text-amber-400 tracking-wider py-4 font-serif">Character Lore</h2>
-        </div>
+        {mode !== "mobile-rpg" && (
+          <div className="relative mb-8 text-center">
+            <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-800 rounded-md -skew-x-3 transform -rotate-1"></div>
+            <div className="absolute inset-0 mx-auto w-[280px] h-[70px] bg-stone-700 rounded-md skew-x-2 transform rotate-1"></div>
+            <h2 className="relative text-3xl font-bold text-amber-400 tracking-wider py-4 font-serif">
+              Character Lore
+            </h2>
+          </div>
+        )}
 
         {/* Map Background */}
         <div className="relative bg-stone-800/90 rounded-xl p-6 border-2 border-stone-600 shadow-xl overflow-hidden">
@@ -51,8 +55,8 @@ export default function AboutArchive({ mode = "roguelike" }: AboutArchiveProps) 
             {/* About Content */}
             <div className="max-w-2xl mx-auto text-center">
               <p className="text-amber-300 leading-relaxed font-serif mb-4 text-lg">
-                Mohammed Aldaqaq is a high school student specializing in cloud computing at the Nasser Center for
-                Science and Technology.
+                Mohammed Aldaqaq is a high school Graduate from Nasser Center for Science and Technology.
+                specializing in cloud computing
               </p>
 
               <p className="text-amber-300 leading-relaxed font-serif mb-4">
